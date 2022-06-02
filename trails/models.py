@@ -10,7 +10,19 @@ SHARE_SETTINGS = (
 )
 
 def trail_file_location(self, filename):
-    return f'{self.slug}/{filename}'
+    return f'{self.slug}/trail_file_{filename}'
+
+def heightmap_location(self, filename):
+    return f'{self.slug}/heightmap_{filename}'
+
+def mesh_location(self, filename):
+    return f'{self.slug}/mesh_{filename}'
+
+def texture_sat_location(self, filename):
+    return f'{self.slug}/texture_sat_{filename}'
+
+def texture_trail_location(self, filename):
+    return f'{self.slug}/texture_trail_{filename}'
 
 class Trail(models.Model):
     name = models.CharField(max_length=100)
@@ -19,11 +31,16 @@ class Trail(models.Model):
     share = models.CharField(max_length=7, choices=SHARE_SETTINGS, default='private')
     upload_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     slug = models.SlugField(unique=True, blank=True)
+    min_lat = models.FloatField(null=True, blank=True) # generated afterward
+    max_lat = models.FloatField(null=True, blank=True) # generated afterward
+    min_lon = models.FloatField(null=True, blank=True) # generated afterward
+    max_lon = models.FloatField(null=True, blank=True) # generated afterward
     center_lat = models.FloatField(null=True, blank=True) # generated afterward
     center_lon = models.FloatField(null=True, blank=True) # generated afterward
-    mesh = models.FileField(null=True, blank=True) # generated afterward
-    texture_sat = models.ImageField(null=True, blank=True) # requested afterward
-    texture_trail = models.ImageField(null=True, blank=True) # generated afterward
+    heightmap = models.FileField(upload_to=heightmap_location,null=True, blank=True) # generated afterward
+    mesh = models.FileField(upload_to=mesh_location,null=True, blank=True) # generated afterward
+    texture_sat = models.ImageField(upload_to=texture_sat_location,null=True, blank=True) # requested afterward
+    texture_trail = models.ImageField(upload_to=texture_trail_location,null=True, blank=True) # generated afterward
 
     # ForeignKeys: (*=written)
     # *waypoints
