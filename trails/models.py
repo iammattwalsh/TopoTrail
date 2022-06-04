@@ -26,10 +26,11 @@ def texture_trail_location(self, filename):
 
 class Trail(models.Model):
     name = models.CharField(max_length=100)
-    desc = models.CharField(max_length=500)
+    desc = models.CharField(max_length=500, null=True, blank=True)
     trail_file = models.FileField(upload_to=trail_file_location,validators=[FileExtensionValidator( ['geojson','gpx'] ) ])
     share = models.CharField(max_length=7, choices=SHARE_SETTINGS, default='private')
     upload_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    timestamp = models.DateTimeField()
     slug = models.SlugField(unique=True, blank=True)
     min_lat = models.FloatField(null=True, blank=True) # generated afterward
     max_lat = models.FloatField(null=True, blank=True) # generated afterward
@@ -37,10 +38,18 @@ class Trail(models.Model):
     max_lon = models.FloatField(null=True, blank=True) # generated afterward
     center_lat = models.FloatField(null=True, blank=True) # generated afterward
     center_lon = models.FloatField(null=True, blank=True) # generated afterward
-    heightmap = models.FileField(upload_to=heightmap_location,null=True, blank=True) # generated afterward
-    mesh = models.FileField(upload_to=mesh_location,null=True, blank=True) # generated afterward
-    texture_sat = models.ImageField(upload_to=texture_sat_location,null=True, blank=True) # requested afterward
-    texture_trail = models.ImageField(upload_to=texture_trail_location,null=True, blank=True) # generated afterward
+    heightmap = models.FileField(upload_to=heightmap_location, null=True, blank=True) # generated afterward
+    mesh = models.FileField(upload_to=mesh_location, null=True, blank=True) # generated afterward
+    texture_sat = models.ImageField(upload_to=texture_sat_location, null=True, blank=True) # requested afterward
+    texture_trail = models.ImageField(upload_to=texture_trail_location, null=True, blank=True) # generated afterward
+    
+    status_parsed = models.FloatField(default=0) # auto-calculated during generation
+    status_waypoints = models.FloatField(default=0) # auto-calculated during generation
+    status_heightmap = models.FloatField(default=0) # auto-calculated during generation
+    status_mesh = models.FloatField(default=0) # auto-calculated during generation
+    status_texture_trail = models.FloatField(default=0) # auto-calculated during generation
+    status_texture_satellite = models.FloatField(default=0) # auto-calculated during generation
+    status_overall = models.FloatField(default=0) # auto-calculated during generation
 
     # ForeignKeys: (*=written)
     # *waypoints
@@ -50,21 +59,32 @@ class Trail(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            # find number of matching names that would cause a duplicate slug
+            matching_slugs = Trail.objects.filter(name=self.name).count()
+            # add a number to the end of the slug if matches exist
+            if matching_slugs > 0:
+                self.slug = slugify(self.name + '-' + str(matching_slugs))
+            # make a regular slug if no matches exist
+            else:
+                self.slug = slugify(self.name)
         super(Trail, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
 
 class Waypoint(models.Model):
+    name = models.CharField(max_length=50)
     parent_trail = models.ForeignKey(Trail, on_delete=models.CASCADE)
     position = models.IntegerField()
     lat = models.FloatField()
     lon = models.FloatField()
-    notes = models.CharField(max_length=200)
+    notes = models.CharField(max_length=200, null=True, blank=True)
 
     # ForeignKeys: (*=written)
     # photos
+
+    def __str__(self):
+        return self.name
 
 class Photo(models.Model):
     ...
