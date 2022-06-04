@@ -1,7 +1,8 @@
+from tkinter import CASCADE
 from django.db import models
 # from django.contrib.auth.models import User
 from django.utils.text import slugify
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 
 from users.models import CustomUser
 
@@ -13,6 +14,9 @@ SHARE_SETTINGS = (
 
 def trail_file_location(self, filename):
     return f'{self.slug}/trail_file_{filename}'
+
+def photo_location(self, filename):
+    return f'{self.slug}/photos/{filename}'
 
 def heightmap_location(self, filename):
     return f'{self.slug}/heightmap_{filename}'
@@ -28,12 +32,13 @@ def texture_trail_location(self, filename):
 
 class Trail(models.Model):
     name = models.CharField(max_length=100)
-    desc = models.CharField(max_length=500, null=True, blank=True)
+    desc = models.CharField(max_length=1000, null=True, blank=True)
     trail_file = models.FileField(upload_to=trail_file_location,validators=[FileExtensionValidator( ['geojson','gpx'] ) ])
     share = models.CharField(max_length=7, choices=SHARE_SETTINGS, default='private')
     upload_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, null=True)
     timestamp = models.DateTimeField()
     slug = models.SlugField(unique=True, blank=True)
+    average_rating = models.IntegerField(null=True, blank=True) # calculated from individual ratings
     min_lat = models.FloatField(null=True, blank=True) # generated afterward
     max_lat = models.FloatField(null=True, blank=True) # generated afterward
     min_lon = models.FloatField(null=True, blank=True) # generated afterward
@@ -89,10 +94,26 @@ class Waypoint(models.Model):
         return self.name
 
 class Photo(models.Model):
-    ...
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    parent_trail = models.ForeignKey(Trail, on_delete=models.CASCADE, null=True, blank=True)
+    parent_waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    photo = models.ImageField(upload_to=photo_location)
+    caption = models.CharField(max_length=100)
 
 class Comment(models.Model):
-    ...
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    parent_trail = models.ForeignKey(Trail, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    comment = models.CharField(max_length=500)
 
 class Rating(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    parent_trail = models.ForeignKey(Trail, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+class TrailType(models.Model):
+    # type of trail - (climbing, hiking, cycling, etc)
+    # allow selection of multiple
     ...

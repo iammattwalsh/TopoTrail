@@ -2,7 +2,7 @@ from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils import timezone
 
-from .models import Trail, Waypoint, Photo, Comment, Rating
+from .models import Trail, Waypoint, Photo, Comment, Rating, TrailType
 from .forms import NewTrailForm
 
 import asyncio
@@ -122,6 +122,13 @@ def view_trail(request, slug):
     }
     return render(request, 'pages/trail.html', context)
 
+def rate_trail(request, slug):
+    """
+    Saves individual rating and updates trail's overall rating
+    """
+    # update_trail_rating(trail)
+    ...
+
 ####################
 # HELPER FUNCTIONS #
 ####################
@@ -136,6 +143,12 @@ def check_status(trail):
     else:
         trail.status_overall = (trail.status_parsed + trail.status_waypoints + trail.status_heightmap + trail.status_mesh + trail.status_texture_trail + trail.status_texture_satellite) / 6
         trail.save()
+
+def update_trail_rating(trail):
+    """
+    Updates trail's rating from individual ratings
+    """
+    ...
 
 async def make_waypoints(coords, trail):
     """
