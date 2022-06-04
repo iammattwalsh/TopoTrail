@@ -1,8 +1,10 @@
 # code
 from django.db.models.signals import post_save, pre_delete
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.dispatch import receiver
 from .models import Trail
+
+from users.models import User
 
 import asyncio
 import time

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from .models import CustomUser
 
 def login_user(request):
     context = {}
@@ -28,12 +29,12 @@ def register_user(request):
         password2 = request.POST.get('password2')
 
         message = ''
-        if User.objects.filter(username=username).exists():
+        if CustomUser.objects.filter(username=username).exists():
             message += 'Username already taken. Please try again.'
         elif password1 != password2:
             message += 'Passwords do not match. Please try again.'
         if not message:
-            user = User.objects.create_user(username=username, password=password1)
+            user = CustomUser.objects.create_user(username=username, password=password1)
             login(request, user)
             return redirect('trails:home')
         context = {'message': message}

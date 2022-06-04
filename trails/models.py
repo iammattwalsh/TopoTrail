@@ -1,7 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.core.validators import FileExtensionValidator
+
+from users.models import CustomUser
 
 SHARE_SETTINGS = (
     ('private','Private'),
@@ -29,7 +31,7 @@ class Trail(models.Model):
     desc = models.CharField(max_length=500, null=True, blank=True)
     trail_file = models.FileField(upload_to=trail_file_location,validators=[FileExtensionValidator( ['geojson','gpx'] ) ])
     share = models.CharField(max_length=7, choices=SHARE_SETTINGS, default='private')
-    upload_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    upload_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, null=True)
     timestamp = models.DateTimeField()
     slug = models.SlugField(unique=True, blank=True)
     min_lat = models.FloatField(null=True, blank=True) # generated afterward

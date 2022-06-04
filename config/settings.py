@@ -142,6 +142,8 @@ MEDIA_URL = '/uploads/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
-
-
+# Allow async - NEED TO REVIEW FOR PRODUCTION
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
+# Use custom user model
+AUTH_USER_MODEL = 'users.CustomUser'
