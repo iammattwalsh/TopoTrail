@@ -1,5 +1,6 @@
 from tkinter import CASCADE
 from django.db import models
+from django.forms import CharField
 # from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
@@ -11,6 +12,13 @@ SHARE_SETTINGS = (
     ('public','Public'),
     ('link','Link'),
 )
+
+TRAIL_TYPES = {
+    ('hiking','Hiking'),
+    ('climbing','Climbing'),
+    ('cycling (road)','Cycling (Road)'),
+    ('cycling (off road)', 'Cycling (Off Road)'),
+}
 
 def trail_file_location(self, filename):
     return f'{self.slug}/trail_file_{filename}'
@@ -58,12 +66,6 @@ class Trail(models.Model):
     status_texture_satellite = models.FloatField(default=0) # auto-calculated during generation
     status_overall = models.FloatField(default=0) # auto-calculated during generation
 
-    # ForeignKeys: (*=written)
-    # *waypoints
-    # photos
-    # comments
-    # rating
-
     def save(self, *args, **kwargs):
         if not self.slug:
             # find number of matching names that would cause a duplicate slug
@@ -86,9 +88,6 @@ class Waypoint(models.Model):
     lat = models.FloatField()
     lon = models.FloatField()
     notes = models.CharField(max_length=200, null=True, blank=True)
-
-    # ForeignKeys: (*=written)
-    # photos
 
     def __str__(self):
         return self.name
@@ -114,6 +113,17 @@ class Rating(models.Model):
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
 
 class TrailType(models.Model):
-    # type of trail - (climbing, hiking, cycling, etc)
-    # allow selection of multiple
-    ...
+    type = models.CharField(max_length=50, choices=TRAIL_TYPES)
+    trails = models.ManyToManyField(Trail, null=True, blank=True)
+    slug = models.SlugField(unique=True)
+    # allow selection of multiple types per trail
+    # does this need date added? (for future - to filter existing trails before new types are added)
+    # check types above - does cycling need "off road" split between gravel and mtb?
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.type)
+        super(Trail, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.type
