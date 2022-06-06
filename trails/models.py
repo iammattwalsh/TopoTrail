@@ -16,8 +16,7 @@ SHARE_SETTINGS = (
 TRAIL_TYPES = {
     ('hiking','Hiking'),
     ('climbing','Climbing'),
-    ('cycling (road)','Cycling (Road)'),
-    ('cycling (off road)', 'Cycling (Off Road)'),
+    ('cycling','Cycling'),
 }
 
 def trail_file_location(self, filename):
