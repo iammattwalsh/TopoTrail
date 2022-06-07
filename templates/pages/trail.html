@@ -33,10 +33,10 @@
 <h3>Waypoints:</h3>
 <ul>
     {% for waypoint in trail_waypoints %}
-    <li>{{ waypoint.lat }}, {{ waypoint.lon }}</li>
+    <li>{{ waypoint.lat }}, {{ waypoint.lon }}{% if waypoint.notes %}<p>{{ waypoint.notes }}</p>{% endif %}{% if request.user == trail.upload_user %} <button>future edit button</button>{% endif %}</li>
     {% endfor %}
 </ul>
-
+{% if request.user == trail.upload_user %}
 <h3 id="edit">Edit description:</h3>
 <form action="{% url 'trails:edit_trail' trail.slug %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -47,4 +47,5 @@
     {% csrf_token %}
     <button type="submit">Delete Trail</button>
 </form>
+{% endif %}
 {% endblock %}

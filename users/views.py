@@ -1,5 +1,5 @@
 from django.forms import ValidationError
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.core.validators import validate_email
 from django import forms
@@ -14,7 +14,9 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('trails:home')
+            # return redirect('trails:home')
+            next = request.POST.get('next', '/')
+            return HttpResponseRedirect(next)
         else:
             context = {'message': 'Incorrect username or password.  Please try again.'}
 
@@ -22,7 +24,9 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('trails:home')
+    # return redirect('trails:home')
+    next = request.POST.get('next', '/')
+    return HttpResponseRedirect(next)
 
 def register_user(request):
     context = {}

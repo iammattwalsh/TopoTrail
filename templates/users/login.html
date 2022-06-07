@@ -10,6 +10,8 @@
 <form action="{% url 'users:login_user' %}" method="POST" class="">
     {% csrf_token %}
 
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+
     <div class="">
         <!-- <label for="username" class="">Username:</label> -->
         <input type="text" id="username" name="username" class="" placeholder="Enter your username">
