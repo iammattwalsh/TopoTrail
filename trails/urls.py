@@ -11,6 +11,6 @@ urlpatterns = [
     path('trail/<slug:slug>/delete', views.delete_trail, name = 'delete_trail'),
 
 
-    path('test', views.vue_test, name = 'vue_test'),
-    path('test/<slug:slug>', views.vue_test_2, name = 'vue_test_2'),
+    # path('test', views.vue_test, name = 'vue_test'),
+    # path('test/<slug:slug>', views.vue_test_2, name = 'vue_test_2'),
 ]

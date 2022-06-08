@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import numpy as np
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageDraw
 Image.MAX_IMAGE_PIXELS = None
 
 from requests import get
@@ -89,7 +89,7 @@ async def process_upload(request, slug):
 
 
     asyncio.gather(
-        get_heightmap(trail,coord_mid,'SRTMGL3',30),
+        get_heightmap(trail,'SRTMGL3',coord_min,coord_max,coord_mid,coords),
         make_waypoints(coords, trail),
     )
 
@@ -298,7 +298,7 @@ def parse_trail_file(trail):
     check_status(trail)
     return file_type, coords, coord_min, coord_max, coord_mid
 
-async def get_heightmap(trail,coord_mid,dataset,map_size):
+async def get_heightmap(trail,dataset,coord_min,coord_max,coord_mid,coords):
     """
     Gets heightmap from API and saves. Returns bool based on success/failure.
     """
@@ -309,20 +309,29 @@ async def get_heightmap(trail,coord_mid,dataset,map_size):
 
     SECRET_KEY_OPEN_TOPOGRAPHY = os.environ.get('SECRET_KEY_OPEN_TOPOGRAPHY')
     # approximately convert miles from user input to lat/long offset value
-    size_scale = round(map_size / 120, 14)
-    # find edges of area using center point and offset value
-    north = coord_mid[0] + size_scale + size_scale
-    south = coord_mid[0] - size_scale
-    east = coord_mid[1] + size_scale
-    west = coord_mid[1] - size_scale
+    # size_scale = round(map_size / 120, 14)
+    # # find edges of area using center point and offset value
+    # north = coord_mid[0] + size_scale
+    # south = coord_mid[0] - size_scale
+    # east = coord_mid[1] + size_scale
+    # west = coord_mid[1] - size_scale
+
+
+    buffer = .1
+    north = coord_max[0] + buffer
+    south = coord_min[0] - buffer
+    east = coord_max[1] + buffer
+    west = coord_min[1] - buffer
+
+
     # grab hidden API key
     api_key = SECRET_KEY_OPEN_TOPOGRAPHY
     # build URL for request
     url = f'https://portal.opentopography.org/API/globaldem?demtype={dataset}&south={south}&north={north}&west={west}&east={east}&outputFormat=GTiff&API_Key={api_key}'
     # request from API, save image if successful and return bool
     loop = asyncio.get_event_loop()
-    future1 = loop.run_in_executor(None, lambda: get(url, stream=True))
-    response = await future1
+    future = loop.run_in_executor(None, lambda: get(url, stream=True))
+    response = await future
 
     # update status
     # trail.status_heightmap = .25
@@ -354,22 +363,24 @@ async def get_heightmap(trail,coord_mid,dataset,map_size):
             check_status(trail)
 
             # clean anomalies and generate mesh after success
-            cleanup_generation_loop(trail)
+            cleanup_generation_loop(trail,dataset,coords,coord_mid,north,south,east,west)
     else:
         # update status
         trail.status_heightmap = 0
         trail.save()
         check_status(trail)
 
-def cleanup_generation_loop(trail):
-    depth = .05 # temp value
+def cleanup_generation_loop(trail,dataset,coords,coord_mid,north,south,east,west):
+    if dataset == 'SRTMGL1':
+        depth = .06 # temp value
+    else:
+        depth = .02 # temp value
     pixels,width,height = open_img(trail)
     pixels = find_white(pixels,width,height)
-    # pixels,width,height = img_resize(pixels,width,height)
     vertices = make_verts(pixels,width,height,depth)
     polys = make_polys(width,height)
     make_obj(vertices,polys,trail)
-    ...
+    draw_trail(coords,coord_mid,north,south,east,west,trail,width,height)
 
 def open_img(trail):
     """
@@ -388,7 +399,7 @@ def open_img(trail):
     img_array = np.array(new_pixels, dtype=np.uint16)
     img = Image.fromarray(img_array)
     # save reprocessed image and regenerate/return variables
-    img.save(f'{path}/img_cache.tif')
+    img.save(f'{path}/uploads/{trail.slug}/heightmap.tif')
     width,height = img.size
     pixels = img.load()
     return pixels,width,height
@@ -493,7 +504,7 @@ def make_verts(pixels,width,height,depth):
     for x in range(width):
         for y in range(height):
             # add tuple with x, y, and z coordinates to vertices list
-            vertices.append((x,y,round(pixels[x,y] * depth,2)))
+            vertices.append((x - (width / 2),round(pixels[x,y] * depth,2),y - (height / 2)))
     # return completed list
     return vertices
 
@@ -506,14 +517,14 @@ def make_polys(width,height):
     # create polys referencing x/y vertices
     for x in range(width - 1):
         for y in range(height - 1):
-            base = x * width + y
+            base = (x * height) + y
             a = base
             b = base + 1
-            c = base + width + 1
-            d = base + width
+            c = base + height + 1
+            d = base + height
             # add poly pairs to list
-            polys.append((a,b,c))
-            polys.append((a,c,d))
+            polys.append((a,b,d))
+            polys.append((b,d,c))
     # return poly list
     return polys
 
@@ -521,6 +532,10 @@ def make_obj(vertices,polys,trail):
     """
     Writes .obj file with data taken from heightmap
     """
+    # update status
+    trail.status_mesh = 0
+    trail.save()
+    check_status(trail)
     # create file pased on user input
     with open(f'{path}/uploads/{trail.slug}/mesh.obj', 'w') as obj_file:
         # add vertices in format "v x-value y-value z-value"
@@ -528,43 +543,32 @@ def make_obj(vertices,polys,trail):
             obj_file.write(f'v {vertex[0]} {vertex[1]} {vertex[2]}\n')
         # add polys in format "f corner-1 corner-2 corner-3"
         for poly in polys:
-            obj_file.write(f'f {poly[2] + 1} {poly[1] + 1} {poly[0] + 1}\n')
+            # obj_file.write(f'f {poly[2] + 1} {poly[1] + 1} {poly[0] + 1}\n')####################
+            obj_file.write(f'f {poly[0] + 1} {poly[1] + 1} {poly[2] + 1}\n')
+        # save to model and update status
+        trail.mesh.name = f'{trail.slug}/mesh.obj'
+        trail.status_mesh = 1
+        trail.save()
+        check_status(trail)
+
+def draw_trail(coords,coord_mid,north,south,east,west,trail,width,height):
+    coord_height = north - south
+    coord_width = east - west
+    height_var = height/coord_height*10
+    width_var = width/coord_width*10
+
+    print(f'width: {width}, calc width: {coord_width * width_var}')
+    print(f'height: {height}, calc height: {coord_height * height_var}')
+    print(f'mod vars - height: {height_var} - width {width_var} ')
+
+
+    texture_trail = Image.new('RGB', (width*10,height*10))
+    draw = ImageDraw.Draw(texture_trail)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-def find_heightmap_anomalies():
-    ...
-
-def clean_heightmap_anomalies():
-
-    ...
-
-async def make_mesh(heightmap):
-    ...
-
-
-
-
-
-
-
-
-
-
-async def draw_trail(coords, coord_mid):
+    # with open(f'{path}/uploads/{trail.slug}/texture_trail.png', 'w') as texture_trail:
+    #     ...
     ...
 
 async def get_satellite():
