@@ -317,7 +317,7 @@ async def get_heightmap(trail,dataset,coord_min,coord_max,coord_mid,coords):
     # west = coord_mid[1] - size_scale
 
 
-    buffer = .1
+    buffer = .05
     north = coord_max[0] + buffer
     south = coord_min[0] - buffer
     east = coord_max[1] + buffer
@@ -371,6 +371,9 @@ async def get_heightmap(trail,dataset,coord_min,coord_max,coord_mid,coords):
         check_status(trail)
 
 def cleanup_generation_loop(trail,dataset,coords,coord_mid,north,south,east,west):
+    """
+    Handles cleanup of heightmap and generation of additional assets based on cleaned heightmap
+    """
     if dataset == 'SRTMGL1':
         depth = .06 # temp value
     else:
@@ -552,24 +555,34 @@ def make_obj(vertices,polys,trail):
         check_status(trail)
 
 def draw_trail(coords,coord_mid,north,south,east,west,trail,width,height):
+    """
+    Draws trail texture based on coordinate inputs
+    """
+    trail.status_texture_trail = 0
+    trail.save()
+    check_status(trail)
+
     coord_height = north - south
     coord_width = east - west
     height_var = height/coord_height*10
     width_var = width/coord_width*10
 
-    print(f'width: {width}, calc width: {coord_width * width_var}')
-    print(f'height: {height}, calc height: {coord_height * height_var}')
-    print(f'mod vars - height: {height_var} - width {width_var} ')
-
-
-    texture_trail = Image.new('RGB', (width*10,height*10))
+    image_size_var = 10
+    texture_trail = Image.new('RGB', (width*image_size_var,height*image_size_var))
     draw = ImageDraw.Draw(texture_trail)
 
+    for i, coord in enumerate(coords):
+        if i < (len(coords) - 1):
+            this_coord = (((coord[1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coord[0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
+            next_coord = (((coords[i+1][1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coords[i+1][0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
+            draw.line([this_coord,next_coord],'Red',1)
+    # texture_trail.show()
+    texture_trail.save(f'{path}/uploads/{trail.slug}/texture_trail.png')
+    trail.texture_trail.name = f'{trail.slug}/texture_trail.png'
 
-
-    # with open(f'{path}/uploads/{trail.slug}/texture_trail.png', 'w') as texture_trail:
-    #     ...
-    ...
+    trail.status_texture_trail = 1
+    trail.save()
+    check_status(trail)
 
 async def get_satellite():
     ...

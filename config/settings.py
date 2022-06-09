@@ -136,7 +136,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Base url to serve media files
 
-MEDIA_URL = '/uploads/'
+MEDIA_URL = 'uploads/'
 
 # Path where media is stored
 
