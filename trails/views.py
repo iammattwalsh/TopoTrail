@@ -382,7 +382,7 @@ def cleanup_generation_loop(trail,dataset,coords,coord_mid,north,south,east,west
     pixels = find_white(pixels,width,height)
     vertices = make_verts(pixels,width,height,depth)
     polys = make_polys(width,height)
-    make_obj(vertices,polys,trail)
+    make_obj(vertices,polys,trail,width,height)
     draw_trail(coords,coord_mid,north,south,east,west,trail,width,height)
 
 def open_img(trail):
@@ -526,12 +526,14 @@ def make_polys(width,height):
             c = base + height + 1
             d = base + height
             # add poly pairs to list
-            polys.append((a,b,d))
-            polys.append((b,d,c))
+            # polys.append((a,b,d))
+            # polys.append((b,d,c))
+            polys.append((a,b,c))
+            polys.append((a,c,d))
     # return poly list
     return polys
 
-def make_obj(vertices,polys,trail):
+def make_obj(vertices,polys,trail,width,height):
     """
     Writes .obj file with data taken from heightmap
     """
@@ -544,10 +546,13 @@ def make_obj(vertices,polys,trail):
         # add vertices in format "v x-value y-value z-value"
         for vertex in vertices:
             obj_file.write(f'v {vertex[0]} {vertex[1]} {vertex[2]}\n')
-        # add polys in format "f corner-1 corner-2 corner-3"
+        # add vertice-texture coordinates
+        for x in range(width):
+            for y in range(height):
+                obj_file.write(f'vt {x/width} {y/height}\n')
+        # add polys in format "f corner-1/vertice-texture-1 corner-2/vertice-texture-2 corner-3/vertice-texture-3"
         for poly in polys:
-            # obj_file.write(f'f {poly[2] + 1} {poly[1] + 1} {poly[0] + 1}\n')####################
-            obj_file.write(f'f {poly[0] + 1} {poly[1] + 1} {poly[2] + 1}\n')
+            obj_file.write(f'f {poly[0] + 1}/{poly[0] + 1} {poly[1] + 1}/{poly[1] + 1} {poly[2] + 1}/{poly[2] + 1}\n')
         # save to model and update status
         trail.mesh.name = f'{trail.slug}/mesh.obj'
         trail.status_mesh = 1
@@ -568,15 +573,15 @@ def draw_trail(coords,coord_mid,north,south,east,west,trail,width,height):
     width_var = width/coord_width*10
 
     image_size_var = 10
-    texture_trail = Image.new('RGB', (width*image_size_var,height*image_size_var))
+    texture_trail = Image.new('RGBA', (width*image_size_var,height*image_size_var))
     draw = ImageDraw.Draw(texture_trail)
 
+    draw.rectangle([0,0,width*image_size_var,height*image_size_var],'White')
     for i, coord in enumerate(coords):
         if i < (len(coords) - 1):
             this_coord = (((coord[1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coord[0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
             next_coord = (((coords[i+1][1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coords[i+1][0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
             draw.line([this_coord,next_coord],'Red',1)
-    # texture_trail.show()
     texture_trail.save(f'{path}/uploads/{trail.slug}/texture_trail.png')
     trail.texture_trail.name = f'{trail.slug}/texture_trail.png'
 
