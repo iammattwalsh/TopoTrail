@@ -7,7 +7,7 @@
 {% block content %}
 <h1 class="">Register</h1>
 
-<form action="{% url 'users:register_user' %}" method="POST" class="">
+<form action="{% url 'users:signup_user' %}" method="POST" class="">
     {% csrf_token %}
     
     <input type="hidden" name="next" value="{{ request.GET.next }}">

@@ -147,3 +147,5 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 # Use custom user model
 AUTH_USER_MODEL = 'users.CustomUser'
+
+LOGIN_URL = '/user/login'

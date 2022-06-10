@@ -1,12 +1,12 @@
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 from .models import Trail, Waypoint, Photo, Comment, Rating, TrailType
 from .forms import NewTrailForm
 
 import asyncio
-from time import sleep
 
 import geojson
 import gpxpy
@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import numpy as np
-from PIL import Image, ImageOps, ImageDraw
+from PIL import Image, ImageDraw
 Image.MAX_IMAGE_PIXELS = None
 
 from requests import get
@@ -103,6 +103,7 @@ async def process_upload(request, slug):
     return redirect('trails:view_trail', slug=trail.slug)
     # return render(request, 'pages/process.html', context)
 
+@login_required
 def new_trail(request):
     if request.method == 'POST':
         name = request.POST.get('name')

@@ -16,7 +16,11 @@ def login_user(request):
             login(request, user)
             # return redirect('trails:home')
             next = request.POST.get('next', '/')
-            return HttpResponseRedirect(next)
+            print(next)
+            if next:
+                return HttpResponseRedirect(next)
+            else:
+                return redirect('trails:home')
         else:
             context = {'message': 'Incorrect username or password.  Please try again.'}
 
@@ -28,7 +32,7 @@ def logout_user(request):
     next = request.POST.get('next', '/')
     return HttpResponseRedirect(next)
 
-def register_user(request):
+def signup_user(request):
     context = {}
     if request.method == 'POST':
         message = ''
@@ -57,4 +61,4 @@ def register_user(request):
             return redirect('trails:home')
 
         context = {'message': message}
-    return render(request, 'users/register.html', context)
+    return render(request, 'users/signup.html', context)

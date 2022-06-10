@@ -1,14 +1,58 @@
-h1 {
-    color: darkorchid;
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Rokkitt:wght@400&display=swap');
+/* font-family: 'Fredoka One', cursive;
+font-family: 'Rokkitt', serif; */
+
+body {
+    font-family: 'Rokkitt', serif;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fredoka One', cursive;
+}
 
+.brand-logo {
+    font-family: 'Fredoka One', cursive;
+}
 
+.ttblue {
+    background-color: #5E92CD;
+}
 
+.ttblue-text {
+    color: #5E92CD;
+}
 
+.ttgreen {
+    background-color: #487A00;
+}
 
+.ttgreen-text {
+    color: #487A00;
+}
 
+.ttpink {
+    background-color: #E9A28F;
+}
 
+.ttpink-text {
+    color: #E9A28F;
+}
+
+.ttpurple {
+    background-color: #625B72;
+}
+
+.ttpurple-text {
+    color: #625B72;
+}
+
+.ttyellow {
+    background-color: #DFB000;
+}
+
+.ttyellow-text {
+    color: #DFB000;
+}
 
 
 

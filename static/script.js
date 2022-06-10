@@ -1,3 +1,8 @@
+// init materialize modals
+$(document).ready(function(){
+    $('.modal').modal();
+})
+
 Vue.createApp({
     data () {
         return {
@@ -10,12 +15,16 @@ Vue.createApp({
     },
     delimiters: ['[[', ']]'],
     created () {
+        // this.testTheThing()
         
     },
     mounted () {
 
     },
     methods: {
+        // testTheThing () {
+        //     console.log('boop')
+        // },
         // toggleHidden (element) {
         //     // toggle hidden/visible with key to isHidden object passed as string parameter
         //     if (this.isHidden[element]) {
