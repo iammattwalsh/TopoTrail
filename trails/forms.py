@@ -13,11 +13,11 @@ class NewTrailForm(ModelForm):
         widgets = {
             'name': TextInput(attrs={
                 'class': '',
-                'placeholder': 'Trail name',
+                'data-length': 100,
             }),
             'desc': Textarea(attrs={
-                'class': '',
-                'placeholder': 'Trail description',
+                'class': 'materialize-textarea',
+                'data-length': 1000,
             }),
             'trail_file': FileInput(attrs={
                 'class': '',

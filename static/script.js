@@ -3,6 +3,10 @@ $(document).ready(function(){
     $('.modal').modal();
 })
 
+$(document).ready(function() {
+    $('input#id_name, textarea#id_desc').characterCounter();
+});
+
 Vue.createApp({
     data () {
         return {

@@ -94,7 +94,7 @@
                 object.position.y = - 50;
                 var texture = new THREE.TextureLoader().load(JPGFile);
                 
-                object.traverse(function (child) {   // aka setTexture
+                object.traverse(function (child) {
                     if (child instanceof THREE.Mesh) {
                         child.material.map = texture;
                     }
@@ -111,8 +111,8 @@
         window.addEventListener( 'resize', onWindowResize );
         // controls
         controls = new OrbitControls( camera, renderer.domElement );
-        controls.listenToKeyEvents( window ); // optional
-        controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        controls.listenToKeyEvents( window );
+        controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.maxPolarAngle = Math.PI / 2;
     }

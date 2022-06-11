@@ -26,18 +26,20 @@
                 <li><a href="#">Search</a></li>
                 {% if request.user.is_authenticated %}
                 <li><a class="modal-trigger" href="#modal-add-trail">Add Trail</a></li>
-                <li><a href="{% url 'users:logout_user' %}">Logout</a></li>
+                <li><a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a></li>
+                <!-- <li><a href="{% url 'users:logout_user' %}">Logout</a></li> -->
                 {% else %}
                 <li><a class="modal-trigger" href="#modal-login">Login</a></li>
                 <li><a class="modal-trigger" href="#modal-signup">Sign Up</a></li>
                 {% endif %}
             </ul>
-        
+            
             <ul id="nav-mobile" class="sidenav">
                 <li><a href="#">Search</a></li>
                 {% if request.user.is_authenticated %}
                 <li><a class="modal-trigger" href="#modal-add-trail">Add Trail</a></li>
-                <li><a href="{% url 'users:logout_user' %}">Logout</a></li>
+                <li><a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a></li>
+                <!-- <li><a href="{% url 'users:logout_user' %}">Logout</a></li> -->
                 {% else %}
                 <li><a class="modal-trigger" href="#modal-login">Login</a></li>
                 <li><a class="modal-trigger" href="#modal-signup">Sign Up</a></li>
@@ -45,81 +47,51 @@
             </ul>
             <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         </div>
-    </nav>
-    <nav class="ttblue">
+        <!-- Logout Form (hidden) -->
         {% if request.user.is_authenticated %}
-        <form action="{% url 'users:logout_user' %}" method="POST">
+        <form action="{% url 'users:logout_user' %}" method="POST" id="logout-form">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ request.path|urlencode }}">
-            <input type="submit" value="logout">
-        </form>
-        <button @click="isHidden.newTrail = !isHidden.newTrail">new post</button>
-        <form action="{% url 'trails:new_trail' %}" method="post" enctype="multipart/form-data" :class="{ hidden: isHidden.newTrail }">
-            {% csrf_token %}
-            {{ new_trail_form.as_p }}
-            <input type="submit" value="submit">
-        </form>
-        {% else %}
-        <button @click="isHidden.loginRegister = !isHidden.loginRegister">login/signup</button>
-        <form action="{% url 'users:login_user' %}" method="POST" class="" :class="{ hidden: isHidden.loginRegister }">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path|urlencode }}">
-            <div class="">
-                <!-- <label for="username" class="">Username:</label> -->
-                <input type="text" id="username" name="username" class="" placeholder="Enter your username">
-            </div>
-            <div class="">
-                <!-- <label for="password" class="">Password:</label> -->
-                <input type="password" id="password" name="password" class="" placeholder="Enter your password">
-            </div>
-            <div class="">
-                <input type="submit" value="Login" class="">
-            </div>
-            <p class="">{{ message }}</p>
-        </form>
-        <form action="{% url 'users:signup_user' %}" method="POST" class="" :class="{ hidden: isHidden.loginRegister }">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path|urlencode }}">
-            <div class="">
-                <!-- <label for="username" class="">Username:</label> -->
-                <input type="text" id="username" name="username" class="" placeholder="Enter your username">
-            </div>
-            <div class="">
-                <!-- <label for="email" class="">Email:</label> -->
-                <input type="email" id="email" name="email" class="" placeholder="Enter your email address">
-            </div>
-            <div class="">
-                <!-- <label for="password1" class="">Enter Password:</label> -->
-                <input type="password" id="password1" name="password1" class="" placeholder="Enter your password">
-            </div>
-            <div class="">
-                <!-- <label for="password2" class="">Enter Password Again:</label> -->
-                <input type="password" id="password2" name="password2" class="" placeholder="Re-enter your password">
-            </div>
-            <div class="">
-                <input type="submit" value="Register" class="">
-            </div>
-            <p class="">{{ message }}</p>
         </form>
         {% endif %}
     </nav>
     <main>
+
         {% block content %}{% endblock %}
-        
-        <!-- Modal Trigger -->
-        <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
 
         {% if request.user.is_authenticated %}
 
+        <!-- Add Trail Modal -->
         <div id="modal-add-trail" class="modal bottom-sheet">
             <form action="{% url 'trails:new_trail' %}" method="post" enctype="multipart/form-data">
                 <div class="modal-content">
                     <h4>Add Trail</h4>
                     {% csrf_token %}
-                    {{ new_trail_form.as_p }}
+                    <div class="input-field">
+                        {{ new_trail_form.name }}
+                        <label for="id_name">
+                            Trail Name
+                        </label>
+                    </div>
+                    <div class="input-field">
+                        {{ new_trail_form.desc }}
+                        <label for="id_desc">
+                            Trail Description
+                        </label>
+                    </div>
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Select Trail File</span>
+                            <input type="file" id="id_trail_file" name="id_trail_file" class="" accept=".geojson,.gpx">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                        {{ new_trail_form.trail_file }}
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="modal-close waves-effect waves-green btn-flat">Add Trail</button>
+                    <button type="submit" class="modal-close waves-effect waves-light btn-small ttblue"><i class="material-icons right">send</i>Add Trail</button>
                 </div>
             </form>
         </div>
@@ -133,12 +105,21 @@
                     <h4>Login</h4>
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path|urlencode }}">
-                    <input type="text" id="username" name="username" class="" placeholder="Enter your username">
-                    <input type="password" id="password" name="password" class="" placeholder="Enter your password">
-                    <p class="">{{ message }}</p>
+                    <div class="input-field">
+                        <input type="text" id="username" name="username" class="">
+                        <label for="username">
+                            Username
+                        </label>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" id="password" name="password" class="">
+                        <label for="password">
+                            Password
+                        </label>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="modal-close waves-effect waves-green btn-flat">Login</button>
+                    <button type="submit" class="modal-close waves-effect waves-light btn-small ttblue"><i class="material-icons right">send</i>Login</button>
                 </div>
             </form>
         </div>
@@ -150,14 +131,33 @@
                     <h4>Sign Up</h4>
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.path|urlencode }}">
-                    <input type="text" id="username" name="username" class="" placeholder="Enter your username">
-                    <input type="email" id="email" name="email" class="" placeholder="Enter your email address">
-                    <input type="password" id="password1" name="password1" class="" placeholder="Enter your password">
-                    <input type="password" id="password2" name="password2" class="" placeholder="Re-enter your password">
-                    <p class="">{{ message }}</p>
+                    <div class="input-field">
+                        <input type="text" id="username" name="username" class="">
+                        <label for="username">
+                            Username
+                        </label>
+                    </div>
+                    <div class="input-field">
+                        <input type="email" id="email" name="email" class="">
+                        <label for="email">
+                            Email
+                        </label>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" id="password1" name="password1" class="">
+                        <label for="password1">
+                            Password
+                        </label>
+                    </div>
+                    <div class="input-field">
+                        <input type="password" id="password2" name="password2" class="">
+                        <label for="password2">
+                            Confirm password
+                        </label>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="modal-close waves-effect waves-green btn-flat">Sign Up</button>
+                    <button type="submit" class="modal-close waves-effect waves-light btn-small ttblue"><i class="material-icons right">send</i>Sign Up</button>
                 </div>
             </form>
         </div>
