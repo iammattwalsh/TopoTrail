@@ -1,58 +1,121 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Rokkitt:wght@400&display=swap');
-/* font-family: 'Fredoka One', cursive;
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Rokkitt:wght@300&display=swap');
+/* font-family: 'Nunito', sans-serif;
 font-family: 'Rokkitt', serif; */
 
 body {
-    font-family: 'Rokkitt', serif;
+    font-family: 'Nunito', sans-serif;
+    --green: 124,179,66; /* #7CB342 */
+    --purple: 126,87,194; /* #7E57C2 */
+    --yellow: 255,193,7; /* #FFC107 */
+    --light: 255,255,255; /* #FFFFFF */
+    --dark: 38,50,56; /* #263238 */
+}
+
+p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+main a {
+    color: rgba(var(--green), 1);
+    transition: .4s;
+    text-decoration: underline 3px;
+    text-decoration-color: rgba(var(--green), 0);
+}
+
+main a:hover {
+    color: rgb(var(--purple));
+    text-decoration: underline 3px;
+    text-decoration-color: rgba(var(--purple), 1);
+}
+
+section {
+    display: flex;
+}
+
+section div {
+    padding: 10px;
+}
+
+section aside {
+    /* background-color: rgb(var(--dark));
+    color: white; */
+    border-left: 9px double rgb(var(--green));
+    border-bottom: 9px double rgb(var(--green));
+    padding: 10px;
+}
+
+header {
+    background-color: rgb(var(--green));
+    padding: 10px;
+    text-align: center;
+}
+
+header a {
+    color: rgba(var(--purple), 1);
+    text-decoration-color: rgba(var(--purple), 0);
+}
+
+header a:hover {
+    color: rgba(var(--yellow),1);
+    text-decoration-color: rgba(var(--yellow), 1);
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Fredoka One', cursive;
+    font-family: 'Rokkitt', serif;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
-.brand-logo {
-    font-family: 'Fredoka One', cursive;
+nav .brand-logo {
+    font-family: 'Rokkitt', serif;
+    font-weight: bold;
+    transition: .4s;
+    color: rgb(var(--dark));
+    text-decoration: double underline rgba(var(--dark),0) 3px;
 }
 
-.ttblue {
-    background-color: #5E92CD;
+nav .brand-logo:hover {
+    color: rgb(var(--yellow));
+    text-decoration: double underline rgba(var(--yellow),1) 3px;
 }
 
-.ttblue-text {
-    color: #5E92CD;
+nav {
+    border-bottom: 3px double rgb(var(--dark));
 }
 
-.ttgreen {
-    background-color: #487A00;
+nav ul a, nav a {
+    /* color: var(--purple); */
+    color: rgb(var(--dark));
+    transition: .4s;
+    text-decoration: underline rgba(var(--dark),0) 3px;
 }
 
-.ttgreen-text {
-    color: #487A00;
+nav ul a:hover, nav a:hover {
+    color: rgb(var(--green));
+    text-decoration: underline rgba(var(--green),1) 3px;
 }
 
-.ttpink {
-    background-color: #E9A28F;
+nav ul a {
+    /* outline:3px double rgba(0,0,0,0); */
+    /* outline-offset:-3px; */
 }
 
-.ttpink-text {
-    color: #E9A28F;
+nav ul a:hover {
+    background-color: rgba(127,127,127,.15);
+    /* outline:3px double rgba(0,0,0,1); */
 }
 
-.ttpurple {
-    background-color: #625B72;
+
+
+.material-icons {
+    font-size: inherit;
+    line-height: inherit;
 }
 
-.ttpurple-text {
-    color: #625B72;
-}
 
-.ttyellow {
-    background-color: #DFB000;
-}
 
-.ttyellow-text {
-    color: #DFB000;
-}
 
 .hidden {
     display: none;

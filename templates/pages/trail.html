@@ -2,59 +2,78 @@
 {% block title_post %}: {{ trail.name }}
 {% endblock %}
 {% block content %}
-<h1>{{ trail.name }}</h1>
-<p>{{ trail.desc }}</p>
-
-<h4>Uploaded by:</h4>
-<p>{{ trail.upload_user }}</p>
-<h4>Sharing status:</h4>
-<p>{{ trail.share }}</p>
-
-<h3><a href="#edit">Edit/Delete</a></h3>
-
-<h3>Center point:</h3>
-<p>{{ trail.center_lat }}, {{ trail.center_lon }}</p>
-
-<h3>Edges of trail:</h3>
-<p><strong>N:</strong> {{ trail.max_lat }}, <strong>E:</strong> {{ trail.max_lon }}, <strong>S:</strong> {{ trail.min_lat }}, <strong>W:</strong> {{ trail.min_lon }}</p>
-
-<h3>Status:</h3>
-<h4>Overall status:</h4>
-<p>{{ trail.status_overall }}</p>
-<ul>
-    <li>Trail parsed: {{ trail.status_parsed }}</li>
-    <li>Waypoints built: {{ trail.status_waypoints }}</li>
-    <li>Heightmap retrieved: {{ trail.status_heightmap }}</li>
-    <li>Mesh generated: {{ trail.status_mesh }}</li>
-    <li>Trail texture generated: {{ trail.status_texture_trail }}</li>
-    <li>Satellite texture retrieved: {{ trail.status_texture_satellite }}</li>
-</ul>
-
-<h3>Waypoints:</h3>
-<ul>
-    {% for waypoint in trail_waypoints %}
-    <li>{{ waypoint.lat }}, {{ waypoint.lon }}{% if waypoint.notes %}<p>{{ waypoint.notes }}</p>{% endif %}{% if request.user == trail.upload_user %} <button>future edit button</button>{% endif %}</li>
-    {% endfor %}
-</ul>
-{% if request.user == trail.upload_user %}
-<h3 id="edit">Edit description:</h3>
-<form action="{% url 'trails:edit_trail' trail.slug %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="textarea" name="desc" value="{{ trail.desc }}">
-    <button type="submit">Save Changes</button>
-</form>
-<form action="{% url 'trails:delete_trail' trail.slug %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Delete Trail</button>
-</form>
+{% if trail.mesh and trail.texture_trail %}
+<div id="threejs" style="width:100%; height: 50vh; background-color: #263238;"></div>
 {% endif %}
+<header>
+    <div>
+        <h1>{{ trail.name }}</h1>
+        <p>
+            Uploaded by <a href="">{{ trail.upload_user }}  (MAKE link to all public uploads by user)</a> on {{ trail.timestamp|date }}
+            {% if trail.share == 'private' %}
+            <i class="material-icons" title="{{ trail.share }}">lock</i>
+            {% elif trail.share == 'public' %}
+            <i class="material-icons" title="{{ trail.share }}">public</i>
+            {% elif trail.share == 'link' %}
+            <i class="material-icons" title="{{ trail.share }}">share</i>
+            {% endif %}
+        </p>
+    </div>
+</header>
+<section>
+    <div>
+        <p>{{ trail.desc }}</p>
 
-{% if trail.texture_trail %}
-<img src="{{ trail.texture_trail.url }}" alt="" style="width:100%">
-{% endif %}
+        <a href="#" ref="trail_slug_anchor" @click="getTrailPhotos">{{ trail.slug }}</a>
+    </div>
+
+
+
+
+    <aside>
+        <a class="modal-trigger" href="#modal-add-photos">Add Photos</a>
+        <h5>Center point:</h5>
+        <p>{{ trail.center_lat }}, {{ trail.center_lon }}</p>
+
+        <h5>Edges of trail:</h5>
+        <p><strong>N:</strong> {{ trail.max_lat }}, <strong>E:</strong> {{ trail.max_lon }}, <strong>S:</strong> {{ trail.min_lat }}, <strong>W:</strong> {{ trail.min_lon }}</p>
+
+        <h5>Status:</h5>
+        <h6>Overall status:</h6>
+        <p>{{ trail.status_overall }}</p>
+        <ul>
+            <li>Trail parsed: {{ trail.status_parsed }}</li>
+            <li>Waypoints built: {{ trail.status_waypoints }}</li>
+            <li>Heightmap retrieved: {{ trail.status_heightmap }}</li>
+            <li>Mesh generated: {{ trail.status_mesh }}</li>
+            <li>Trail texture generated: {{ trail.status_texture_trail }}</li>
+            <li>Satellite texture retrieved: {{ trail.status_texture_satellite }}</li>
+        </ul>
+        {% if True == False %}
+        <h5>Waypoints:</h5>
+        <ul>
+            {% for waypoint in trail_waypoints %}
+            <li>{{ waypoint.lat }}, {{ waypoint.lon }}{% if waypoint.notes %}<p>{{ waypoint.notes }}</p>{% endif %}{% if request.user == trail.upload_user %} <button>future edit button</button>{% endif %}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if request.user == trail.upload_user %}
+        <h5>Edit description:</h5>
+        <form action="{% url 'trails:edit_trail' trail.slug %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="textarea" name="desc" value="{{ trail.desc }}">
+            <button type="submit">Save Changes</button>
+        </form>
+        <form action="{% url 'trails:delete_trail' trail.slug %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Delete Trail</button>
+        </form>
+        {% endif %}
+    </aside>
+</section>
 
 {% if trail.mesh and trail.texture_trail %}
-<div id="threejs" style="width:100%; height: 50vh"></div>
 {% load static %}
 <script type="importmap">
     {
@@ -83,6 +102,7 @@
         camera.position.y = renderElement.offsetHeight / 8;
         // scene
         scene = new THREE.Scene();
+        //scene.background = "263238"
         // lights
         const ambientLight = new THREE.AmbientLight( 0xcccccc, 0.2 );
         scene.add( ambientLight );
@@ -93,8 +113,8 @@
         var OBJFile = '{{ trail.mesh.url }}';
         var JPGFile = '{{ trail.texture_trail.url }}';
         new OBJLoader()
-            .load(OBJFile, function (object) {
-                object.position.y = - 50;
+        .load(OBJFile, function (object) {
+                object.position.y = - 25;
                 var texture = new THREE.TextureLoader().load(JPGFile);
                 
                 object.traverse(function (child) {
@@ -107,6 +127,7 @@
         // renderer
         renderer = new THREE.WebGLRenderer( { antialias: true } );
         renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setClearColor (0x263238, 0);
         //const renderElement = document.getElementById("threejs");
         //renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.setSize( renderElement.offsetWidth, renderElement.offsetHeight );
@@ -124,7 +145,7 @@
     function onWindowResize() {
         //camera.aspect = window.innerWidth / window.innerHeight;
         camera.aspect = renderElement.offsetWidth / renderElement.offsetHeight;
-        camera.position.y = renderElement.offsetHeight / 8;
+        //camera.position.y = renderElement.offsetHeight / 8;
         camera.updateProjectionMatrix();
         //renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.setSize( renderElement.offsetWidth, renderElement.offsetHeight );
@@ -137,4 +158,41 @@
 </script>
 {% endif %}
 
+{% endblock %}
+
+{% block modals %}
+    <!-- Add Trail Modal -->
+    <div id="modal-add-photos" class="modal bottom-sheet">
+        <form action="{% url 'trails:new_trail' %}" method="post" enctype="multipart/form-data">
+            <div class="modal-content">
+                <h4>Add Trail</h4>
+                {% csrf_token %}
+                <div class="input-field">
+                    {{ new_trail_form.name }}
+                    <label for="id_name">
+                        Trail Name
+                    </label>
+                </div>
+                <div class="input-field">
+                    {{ new_trail_form.desc }}
+                    <label for="id_desc">
+                        Trail Description
+                    </label>
+                </div>
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>Select Trail File</span>
+                        <input type="file" id="id_trail_file" name="id_trail_file" class="" accept=".geojson,.gpx">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                    {{ new_trail_form.trail_file }}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="modal-close waves-effect waves-light btn-small ttblue"><i class="material-icons right">send</i>Add Trail</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

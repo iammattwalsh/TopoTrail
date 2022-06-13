@@ -3,27 +3,30 @@ $(document).ready(function(){
     $('.modal').modal();
 })
 
+// materialize text entry char counter
 $(document).ready(function() {
     $('input#id_name, textarea#id_desc').characterCounter();
+});
+
+// materialize media lightbox
+$(document).ready(function(){
+    $('.materialboxed').materialbox();
 });
 
 Vue.createApp({
     data () {
         return {
             blah:'blah',
-            isHidden: {
-                loginRegister: true,
-                newTrail: true,
-            },
+            currentTrail: '',
         }
     },
     delimiters: ['[[', ']]'],
     created () {
         // this.testTheThing()
-        
+        this.getCurrentTrail()
     },
     mounted () {
-
+        
     },
     methods: {
         // testTheThing () {
@@ -37,13 +40,30 @@ Vue.createApp({
         //         this.isHidden[element] = true
         //     }
         // },
-        loadPage () {
+        // loadPage () {
+        //     axios ({
+        //         method: 'get',
+        //         url: '/test/test-trail-1'
+        //     }).then(res => {
+        //         console.log('boop')
+        //         console.log(res.data)
+        //     })
+        // },
+        getCurrentTrail () {
+            // this.location = window.location.href.toString().split(window.location.host + '/trail/')[1]
+            // if (this.location[-1] == '#') {
+            //     this.location = this.location[]
+            // }
+            // console.log(this.location)
+        },
+        getTrailPhotos () {
+            const trail = this.$refs.trail_slug_anchor.innerText
+            console.log(trail)
             axios ({
                 method: 'get',
-                url: '/test/test-trail-1'
+                url: `/trail/${trail}/get_trail_photos`
             }).then(res => {
-                console.log('boop')
-                console.log(res.data)
+                console.log(res)
             })
         },
     },

@@ -23,7 +23,7 @@ def trail_file_location(self, filename):
     return f'{self.slug}/trail_file_{filename}'
 
 def photo_location(self, filename):
-    return f'{self.slug}/photos/{filename}'
+    return f'photos/{filename}'
 
 def heightmap_location(self, filename):
     return f'{self.slug}/heightmap_{filename}'
@@ -97,7 +97,7 @@ class Photo(models.Model):
     parent_waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     photo = models.ImageField(upload_to=photo_location)
-    caption = models.CharField(max_length=100)
+    caption = models.CharField(max_length=100, null=True, blank=True)
 
 class Comment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

@@ -168,6 +168,15 @@ def rate_trail(request, slug):
     # update_trail_rating(trail)
     ...
 
+def add_trail_photo(request,slug):
+    ...
+
+def get_trail_photos(request,slug):
+    trail = get_object_or_404(Trail, slug=slug)
+    photos = Photo.objects.filter(parent_trail=trail)
+    return JsonResponse(data=photos)
+    ...
+
 ####################
 # HELPER FUNCTIONS #
 ####################
@@ -236,7 +245,13 @@ def parse_trail_file(trail):
     if str(trail_file).endswith('.geojson'):
         with open(trail_file) as f:
             data = geojson.load(f)
-        coords = data['features'][0]['geometry']['coordinates']
+        if data['features'][0]['geometry']['type'] == 'LineString':
+            coords = data['features'][0]['geometry']['coordinates']
+        elif data['features'][0]['geometry']['type'] == 'MultiLineString':
+            coords = []
+            for each_list in data['features'][0]['geometry']['coordinates']:
+                for each_point in each_list:
+                    coords.append(each_point[:2])
         # convert lon,lat formatting to lat,lon
         for point in coords:
             point.reverse()
@@ -527,8 +542,6 @@ def make_polys(width,height):
             c = base + height + 1
             d = base + height
             # add poly pairs to list
-            # polys.append((a,b,d))
-            # polys.append((b,d,c))
             polys.append((a,b,c))
             polys.append((a,c,d))
     # return poly list
