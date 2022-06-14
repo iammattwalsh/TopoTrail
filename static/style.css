@@ -107,15 +107,51 @@ nav ul a:hover {
     /* outline:3px double rgba(0,0,0,1); */
 }
 
+#trail-photos {
+    display: flex;
+    padding:0px;
+}
 
+#trail-photos figure {
+    margin:0px;
+}
+
+/* .material-placeholder {
+    padding: 0px;
+} */
+
+.modal-thumb {
+    object-fit: cover;
+    width:150px;
+    height:150px;
+}
+
+.inside-modal {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 80vh;
+}
+
+#trail-photos .modal {
+    max-height:80%
+}
+
+#trail-photos .modal-content {
+    padding:0px;
+}
+
+/* #trail-photos figure img.active {
+    object-fit: contain;
+} */
+
+/* #materialbox-overlay {
+    background-color: rgb(var(--dark));
+} */
 
 .material-icons {
     font-size: inherit;
     line-height: inherit;
 }
-
-
-
 
 .hidden {
     display: none;

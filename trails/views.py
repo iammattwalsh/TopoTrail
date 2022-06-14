@@ -2,6 +2,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core.serializers import json
 
 from .models import Trail, Waypoint, Photo, Comment, Rating, TrailType
 from .forms import NewTrailForm
@@ -173,9 +174,17 @@ def add_trail_photo(request,slug):
 
 def get_trail_photos(request,slug):
     trail = get_object_or_404(Trail, slug=slug)
-    photos = Photo.objects.filter(parent_trail=trail)
-    return JsonResponse(data=photos)
-    ...
+    photo_objects = Photo.objects.filter(parent_trail=trail)
+    photos = []
+    for photo_object in photo_objects:
+        photos.append({
+            'url': photo_object.photo.url,
+            'caption': photo_object.caption,
+            'timestamp': photo_object.timestamp,
+            'user': photo_object.user.username,
+            'id': photo_object.id,
+        })
+    return JsonResponse(data={'photos':photos})
 
 ####################
 # HELPER FUNCTIONS #

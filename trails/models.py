@@ -23,7 +23,7 @@ def trail_file_location(self, filename):
     return f'{self.slug}/trail_file_{filename}'
 
 def photo_location(self, filename):
-    return f'photos/{filename}'
+    return f'{self.parent_trail.slug}/photos/{filename}'
 
 def heightmap_location(self, filename):
     return f'{self.slug}/heightmap_{filename}'
@@ -98,6 +98,9 @@ class Photo(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     photo = models.ImageField(upload_to=photo_location)
     caption = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.parent_trail.slug}-{self.id}'
 
 class Comment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
