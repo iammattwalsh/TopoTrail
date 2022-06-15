@@ -107,6 +107,10 @@ nav ul a:hover {
     /* outline:3px double rgba(0,0,0,1); */
 }
 
+#trail-photos-container {
+    padding: 0px;
+}
+
 #trail-photos {
     display: flex;
     padding:0px;
@@ -128,7 +132,7 @@ nav ul a:hover {
 
 .inside-modal {
     object-fit: contain;
-    max-width: 100%;
+    width: 100%;
     max-height: 80vh;
 }
 

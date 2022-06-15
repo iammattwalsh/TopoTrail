@@ -30,27 +30,35 @@
                 <!-- <figcaption>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</figcaption> -->
             <!-- </figure>
         </div> -->
-        <div id="trail-photos">
-            <figure v-for="photo in trailPhotos">
-                <a :href="photo.photoHREF" class="modal-trigger">
-                    <img :src="photo.url" :alt="photo.caption" class="modal-thumb">
-                </a>
-                <div :id="photo.photoID" class="modal">
-                    <div class="modal-content">
-                        <img :src="photo.url" :alt="photo.caption" class="inside-modal">
-                        <p>[[ photo.caption ]]</p>
-                        <p>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</p>
+        <div id="trail-photos-container" v-if="trailPhotos.length">
+            <h4>
+                Photos
+            </h4>
+            <div id="trail-photos">
+                <figure v-for="photo in trailPhotos">
+                    <a :href="photo.photoHREF" class="modal-trigger">
+                        <img :src="photo.url" :alt="photo.caption" class="modal-thumb">
+                    </a>
+                    <div :id="photo.photoID" class="modal">
+                        <div class="modal-content">
+                            <img :src="photo.url" :alt="photo.caption" class="inside-modal">
+                            <p>[[ photo.caption ]]</p>
+                            <p>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</p>
+                        </div>
+                        <!-- <div class="modal-footer">
+                            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+                        </div> -->
                     </div>
-                    <div class="modal-footer">
-                        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-                    </div>
-                </div>
-            </figure>
+                </figure>
+            </div>
         </div>
     </div>
 
     <aside>
+        {% if trail.upload_user == request.user %}
         <a class="modal-trigger" href="#modal-add-photos">Add Photos</a>
+        {% endif %}
+        
         <h5>Center point:</h5>
         <p>{{ trail.center_lat }}, {{ trail.center_lon }}</p>
 
