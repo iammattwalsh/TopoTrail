@@ -3,11 +3,13 @@ from django.shortcuts import get_list_or_404, get_object_or_404, redirect, rende
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import json
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Trail, Waypoint, Photo, Comment, Rating, TrailType
 from .forms import NewTrailForm
 
 import asyncio
+import json
 
 import geojson
 import gpxpy
@@ -169,12 +171,34 @@ def rate_trail(request, slug):
     # update_trail_rating(trail)
     ...
 
-def add_trail_photo(request,slug):
-    ...
-
-def get_trail_photos(request,slug):
-    trail = get_object_or_404(Trail, slug=slug)
-    photo_objects = Photo.objects.filter(parent_trail=trail)
+def get_trail_assets(request,slug):
+    trail_object = get_object_or_404(Trail, slug=slug)
+    trail = {
+        'name': trail_object.name,
+        'desc': trail_object.desc,
+        'share': trail_object.share,
+        'upload_user': trail_object.upload_user.username,
+        'timestamp': trail_object.timestamp,
+        'slug': trail_object.slug,
+        'average_rating': trail_object.average_rating,
+        # 'mesh': trail_object.mesh.url,
+        # 'texture_sat': trail_object.texture_sat.url,
+        # 'texture_trail': trail_object.texture_trail.url,
+        'status_parsed': trail_object.status_parsed,
+        'status_waypoints': trail_object.status_waypoints,
+        'status_heightmap': trail_object.status_heightmap,
+        'status_mesh': trail_object.status_mesh,
+        'status_texture_trail': trail_object.status_texture_trail,
+        'status_texture_satellite': trail_object.status_texture_satellite,
+        'status_overall': trail_object.status_overall,
+    }
+    if trail_object.mesh:
+        trail['mesh'] = trail_object.mesh.url
+    if trail_object.texture_sat:
+        trail['texture_sat'] = trail_object.texture_sat.url
+    if trail_object.texture_trail:
+        trail['texture_trail'] = trail_object.texture_trail.url
+    photo_objects = Photo.objects.filter(parent_trail=trail_object)
     photos = []
     for photo_object in photo_objects:
         photos.append({
@@ -184,7 +208,46 @@ def get_trail_photos(request,slug):
             'user': photo_object.user.username,
             'id': photo_object.id,
         })
-    return JsonResponse(data={'photos':photos})
+    return JsonResponse(data={'photos':photos,'trail':trail})
+
+def get_user_trails (request,slug):
+    trail_object = get_object_or_404(Trail, slug=slug)
+    user_trail_objects = Trail.objects.filter(upload_user=trail_object.upload_user)
+    user_trails = []
+    for trail in user_trail_objects:
+        this_trail = {
+            'name': trail.name,
+            'slug': trail.slug,
+            'timestamp': trail.timestamp,
+            'rating': trail.average_rating,
+        }
+        user_trails.append(this_trail)
+    return JsonResponse(data={'user_trails':user_trails})
+
+@csrf_exempt
+def add_trail_photos(request,slug):
+    print('hello are you working')
+    if request.method == 'POST':
+        parent_trail = get_object_or_404(Trail, slug=slug)
+        data = json.loads(request.body)
+        print(data)
+        photos = data.get('photos')
+        print(photos)
+        # for each_photo in photos:
+        #     print('ding')
+        #     user = request.user
+        #     timestamp = timezone.now()
+        #     photo = each_photo
+        #     Photo.objects.create(
+        #         user=user,
+        #         parent_trail=parent_trail,
+        #         timestamp=timestamp,
+        #         photo=photo,
+        #     )
+        print('ok')
+        return JsonResponse({'message': 'ok'})
+    print('not okay')
+    return JsonResponse({'message': 'not ok'})
 
 ####################
 # HELPER FUNCTIONS #

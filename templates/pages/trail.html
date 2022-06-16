@@ -3,26 +3,26 @@
 {% endblock %}
 {% block content %}
 {% if trail.mesh and trail.texture_trail %}
-<div id="threejs" style="width:100%; height: 50vh; background-color: #263238;"></div>
+<div id="threejs" style="width:100%; height: 50vh; background-color: #263238; color:white;"></div>
 {% endif %}
 <header>
     <div>
-        <h1>{{ trail.name }}</h1>
+        <h1>[[ trailAssets.name ]]</h1>
         <p>
-            Uploaded by <a href="">{{ trail.upload_user }}  (MAKE link to all public uploads by user)</a> on {{ trail.timestamp|date }}
-            {% if trail.share == 'private' %}
-            <i class="material-icons" title="{{ trail.share }}">lock</i>
-            {% elif trail.share == 'public' %}
-            <i class="material-icons" title="{{ trail.share }}">public</i>
-            {% elif trail.share == 'link' %}
-            <i class="material-icons" title="{{ trail.share }}">share</i>
-            {% endif %}
+            added by <a href="#modal-user-trails" class="modal-trigger">[[ trailAssets.upload_user ]]</a> on [[ new Date(trailAssets.timestamp).toLocaleDateString() ]] at [[ new Date(trailAssets.timestamp).toLocaleTimeString() ]]
+
+            <i v-if="trailAssets.share == 'private'" class="material-icons" :title="trailAssets.share">lock</i>
+            <i v-if="trailAssets.share == 'public'"  class="material-icons" :title="trailAssets.share">public</i>
+            <i v-if="trailAssets.share == 'link'"  class="material-icons" :title="trailAssets.share">share</i>
+
         </p>
     </div>
 </header>
 <section>
     <div>
-        <p>{{ trail.desc }}</p>
+        <p>[[ trailAssets.desc ]]</p>
+        <a href="#" @click="testToggle">test toggle</a>
+        <!-- MATERIALBOX VERSION - limited -->
         <!-- <div id="trail-photos">
             <figure v-for="photo in trailPhotos">
                 <img class="materialboxed" :src="photo.url" :alt="photo.caption" :data-caption="photo.caption"> -->
@@ -30,6 +30,7 @@
                 <!-- <figcaption>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</figcaption> -->
             <!-- </figure>
         </div> -->
+        <!-- MODAL VERSION - less limited -->
         <div id="trail-photos-container" v-if="trailPhotos.length">
             <h4>
                 Photos
@@ -43,9 +44,10 @@
                         <div class="modal-content">
                             <img :src="photo.url" :alt="photo.caption" class="inside-modal">
                             <p>[[ photo.caption ]]</p>
-                            <p>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</p>
+                            <p><em>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</em></p>
                         </div>
                         <!-- <div class="modal-footer">
+                            [[ photo.id ]]
                             <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
                         </div> -->
                     </div>
@@ -111,12 +113,30 @@
         }
     }
 </script>
-<script type="module">
+<script type="module" defer>
     import * as THREE from 'three';
     import { OBJLoader } from 'obj';
     import { OrbitControls } from 'orbit';
     let camera, controls, scene, renderer;
     let mesh;
+    
+    var OBJFile = app.trailAssets.mesh;
+    var JPGFile = app.trailAssets.texture_trail;
+    function loadAssets () {
+        var loadedOBJ = new OBJLoader()
+        .load(OBJFile, function (object) {
+                object.position.y = - 25;
+                var texture = new THREE.TextureLoader().load(JPGFile);
+                
+                object.traverse(function (child) {
+                    if (child instanceof THREE.Mesh) {
+                        child.material.map = texture;
+                    }
+                });
+                scene.add(object);
+            });
+    }
+    loadAssets();
     init();
     animate();
     const renderElement = document.getElementById("threejs");
@@ -137,20 +157,24 @@
         camera.add( pointLight );
         scene.add( camera );
         // mesh/texture loaders
-        var OBJFile = '{{ trail.mesh.url }}';
-        var JPGFile = '{{ trail.texture_trail.url }}';
-        new OBJLoader()
-        .load(OBJFile, function (object) {
-                object.position.y = - 25;
-                var texture = new THREE.TextureLoader().load(JPGFile);
-                
-                object.traverse(function (child) {
-                    if (child instanceof THREE.Mesh) {
-                        child.material.map = texture;
-                    }
-                });
-                scene.add(object);
-            });
+        // django method
+        //var OBJFile = '{{ trail.mesh.url }}';
+        //var JPGFile = '{{ trail.texture_trail.url }}';
+        // vue method
+        //var OBJFile = app.trailAssets.mesh;
+        //var JPGFile = app.trailAssets.texture_trail;
+        //new OBJLoader()
+        //.load(OBJFile, function (object) {
+        //        object.position.y = - 25;
+        //        var texture = new THREE.TextureLoader().load(JPGFile);
+        //        
+        //        object.traverse(function (child) {
+        //            if (child instanceof THREE.Mesh) {
+        //                child.material.map = texture;
+        //            }
+        //        });
+        //        scene.add(object);
+        //    });
         // renderer
         renderer = new THREE.WebGLRenderer( { antialias: true } );
         renderer.setPixelRatio( window.devicePixelRatio );
@@ -178,6 +202,12 @@
         renderer.setSize( renderElement.offsetWidth, renderElement.offsetHeight );
     }
     function animate() {
+        if ((JPGFile != app.trailAssets.texture_trail) || (OBJFile != app.trailAssets.mesh)) {
+            JPGFile = app.trailAssets.texture_trail
+            OBJFile = app.trailAssets.mesh
+            loadAssets()
+            scene.remove(scene.children[2])
+        }
         requestAnimationFrame( animate );
         controls.update();
         renderer.render( scene, camera );
@@ -188,38 +218,28 @@
 {% endblock %}
 
 {% block modals %}
-    <!-- Add Trail Modal -->
+    <!-- Add Photos Modal -->
     <div id="modal-add-photos" class="modal bottom-sheet">
-        <form action="{% url 'trails:new_trail' %}" method="post" enctype="multipart/form-data">
-            <div class="modal-content">
-                <h4>Add Trail</h4>
-                {% csrf_token %}
-                <div class="input-field">
-                    {{ new_trail_form.name }}
-                    <label for="id_name">
-                        Trail Name
-                    </label>
-                </div>
-                <div class="input-field">
-                    {{ new_trail_form.desc }}
-                    <label for="id_desc">
-                        Trail Description
-                    </label>
-                </div>
-                <div class="file-field input-field">
-                    <div class="btn">
-                        <span>Select Trail File</span>
-                        <input type="file" id="id_trail_file" name="id_trail_file" class="" accept=".geojson,.gpx">
-                    </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text">
-                    </div>
-                    {{ new_trail_form.trail_file }}
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="modal-close waves-effect waves-light btn-small ttblue"><i class="material-icons right">send</i>Add Trail</button>
-            </div>
-        </form>
+        <div class="modal-content">
+            <h4>Upload photos</h4>
+            <form @submit.prevent="addTrailPhotos">
+                <input v-model="newPhotos" type="file" name="test" id="test" multiple="multiple">
+                <input type="submit" value="send em">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        </div>
+    </div>
+    <!-- User Trails Modal -->
+    <div id="modal-user-trails" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h4>Trails added by [[ trailAssets.upload_user ]]</h4>
+            <ul>
+                <li v-for="trail in userTrails">
+                    <a :href="trail.slug">[[ trail.name ]]</a> - <em>added [[ new Date(trail.timestamp).toLocaleDateString() ]]</em>
+                </li>
+            </ul>
+        </div>
     </div>
 {% endblock %}

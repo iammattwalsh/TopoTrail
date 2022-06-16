@@ -13,13 +13,16 @@ $(document).ready(function(){
     $('.materialboxed').materialbox();
 });
 
-Vue.createApp({
+const app = Vue.createApp({
     data () {
         return {
-            blah:'blah',
+            csrf_token: '',
             isTrail: false,
             thisTrail: null,
             trailPhotos: [],
+            trailAssets: {},
+            userTrails: [],
+            newPhotos: [],
         }
     },
     delimiters: ['[[', ']]'],
@@ -27,10 +30,12 @@ Vue.createApp({
         // this.testTheThing()
         this.isThisATrail(),
         this.getCurrentTrail(),
-        this.getTrailPhotos(this.thisTrail)
+        this.getTrailAssets(this.thisTrail)
     },
     mounted () {
-        
+        const input = document.querySelector('input[name="csrfmiddlewaretoken"]')
+        this.csrf_token = input.value
+        this.getUserTrails()
     },
     methods: {
         // testTheThing () {
@@ -70,25 +75,58 @@ Vue.createApp({
             }
             // FUTURE NOTE - a user could break this by including a "#" in their trail name (which hopefully they wouldn't do but you never know)
         },
-        getTrailPhotos (trail) {
+        getTrailAssets () {
             if (this.isTrail) {
                 axios ({
                     method: 'get',
-                    url: `/trail/${trail}/get_trail_photos`
+                    url: `/trail/${this.thisTrail}/get_trail_assets`
                 }).then(res => {
-                    console.log(res.data.photos)
+                    // console.log(res.data.photos)
                     this.trailPhotos = res.data.photos
                     this.trailPhotos.forEach(eachPhoto => {
                         eachPhoto.photoHREF = `#photo${eachPhoto.id}`
                         eachPhoto.photoID = `photo${eachPhoto.id}`
-                        // eachPhoto.captionExt = `${eachPhoto.caption} &#13; Uploaded by ${eachPhoto.user} on ${new Date(eachPhoto.timestamp).toLocaleDateString()} at ${new Date(eachPhoto.timestamp).toLocaleTimeString()}.`
                     })
+                    this.trailAssets = res.data.trail
                 })
             }
         },
-        getPhotoURL (photoPath) {
-            const host = window.location.host
-            return `${host}/trail/${photoPath}`
+        getUserTrails () {
+            if (this.isTrail) {
+                axios ({
+                    method: 'get',
+                    url: `/trail/${this.thisTrail}/get_user_trails`
+                }).then(res => {
+                    this.userTrails = res.data.user_trails
+                })
+            }
+        },
+        addTrailPhotos () {
+            // this.newPhotos = []
+            axios({
+                method: 'post',
+                url: `/trail/${this.thisTrail}/add_trail_photos`,
+                data: {
+                    photos: this.newPhotos
+                },
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'X-CSRFToken': this.csrf_token,
+                }
+            }).then(res => {
+                console.log(res)
+                this.afterTrailPhotoUpload
+            })
+        },
+        afterTrailPhotoUpload () {
+            console.log('we made it to .then')
+        },
+        savePhotoCaptions () {
+
+        },
+        testToggle () {
+            this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
+            this.trailAssets.mesh = '/uploads/mt-hood/mesh.obj'
         },
     },
 }).mount('#app')

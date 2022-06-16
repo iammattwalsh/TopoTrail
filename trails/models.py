@@ -40,7 +40,7 @@ def texture_trail_location(self, filename):
 class Trail(models.Model):
     name = models.CharField(max_length=100)
     desc = models.CharField(max_length=1000, null=True, blank=True)
-    trail_file = models.FileField(upload_to=trail_file_location,validators=[FileExtensionValidator( ['geojson','gpx'] ) ])
+    trail_file = models.FileField(upload_to=trail_file_location,validators=[FileExtensionValidator( ['geojson','gpx','js'] ) ])
     share = models.CharField(max_length=7, choices=SHARE_SETTINGS, default='private')
     upload_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, null=True)
     timestamp = models.DateTimeField()

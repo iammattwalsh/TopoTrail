@@ -21,6 +21,7 @@
 <!-- <body id="app" class="blue-grey darken-4 white-text">
     <nav class="blue-grey darken-4" role="navigation"> -->
 <body id="app" class="white blue-grey-text text-darken-4">
+    {% csrf_token %}
     <nav class="white" role="navigation">
         <div class="nav-wrapper container">
             <a id="logo-container" href="{% url 'trails:home' %}" class="brand-logo center">TopoTrail</a>
