@@ -4,6 +4,7 @@ font-family: 'Rokkitt', serif; */
 
 body {
     font-family: 'Nunito', sans-serif;
+    /* width: 100vw; */
     --green: 124,179,66; /* #7CB342 */
     --purple: 126,87,194; /* #7E57C2 */
     --yellow: 255,193,7; /* #FFC107 */
@@ -14,6 +15,10 @@ body {
 p {
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+main {
+    /* width: 100vw; */
 }
 
 main a {
@@ -113,6 +118,7 @@ nav ul a:hover {
 
 #trail-photos {
     display: flex;
+    flex-wrap: wrap-reverse;
     padding:0px;
 }
 

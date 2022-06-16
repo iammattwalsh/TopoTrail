@@ -2,11 +2,9 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.core.serializers import json
-from django.views.decorators.csrf import csrf_exempt
 
 from .models import Trail, Waypoint, Photo, Comment, Rating, TrailType
-from .forms import NewTrailForm
+from .forms import NewTrailForm, AddTrailPhoto
 
 import asyncio
 import json
@@ -203,6 +201,7 @@ def get_trail_assets(request,slug):
     for photo_object in photo_objects:
         photos.append({
             'url': photo_object.photo.url,
+            'thumb':photo_object.thumb.url,
             'caption': photo_object.caption,
             'timestamp': photo_object.timestamp,
             'user': photo_object.user.username,
@@ -224,30 +223,17 @@ def get_user_trails (request,slug):
         user_trails.append(this_trail)
     return JsonResponse(data={'user_trails':user_trails})
 
-@csrf_exempt
 def add_trail_photos(request,slug):
     print('hello are you working')
-    if request.method == 'POST':
-        parent_trail = get_object_or_404(Trail, slug=slug)
-        data = json.loads(request.body)
-        print(data)
-        photos = data.get('photos')
-        print(photos)
-        # for each_photo in photos:
-        #     print('ding')
-        #     user = request.user
-        #     timestamp = timezone.now()
-        #     photo = each_photo
-        #     Photo.objects.create(
-        #         user=user,
-        #         parent_trail=parent_trail,
-        #         timestamp=timestamp,
-        #         photo=photo,
-        #     )
-        print('ok')
-        return JsonResponse({'message': 'ok'})
-    print('not okay')
-    return JsonResponse({'message': 'not ok'})
+    if request.FILES:
+        form = AddTrailPhoto(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.instance.user = request.user
+            form.instance.parent_trail = get_object_or_404(Trail, slug=slug)
+            form.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
 
 ####################
 # HELPER FUNCTIONS #

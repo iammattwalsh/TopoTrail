@@ -1,17 +1,12 @@
 // init materialize modals
-$(document).ready(function(){
-    $('.modal').modal();
-})
+// $(document).ready(function(){
+//     $('.modal').modal();
+// })
 
 // materialize text entry char counter
 $(document).ready(function() {
     $('input#id_name, textarea#id_desc').characterCounter();
-});
-
-// materialize media lightbox
-$(document).ready(function(){
-    $('.materialboxed').materialbox();
-});
+})
 
 const app = Vue.createApp({
     data () {
@@ -27,37 +22,28 @@ const app = Vue.createApp({
     },
     delimiters: ['[[', ']]'],
     created () {
-        // this.testTheThing()
-        this.isThisATrail(),
-        this.getCurrentTrail(),
+        this.isThisATrail()
+        this.getCurrentTrail()
         this.getTrailAssets(this.thisTrail)
     },
     mounted () {
         const input = document.querySelector('input[name="csrfmiddlewaretoken"]')
         this.csrf_token = input.value
         this.getUserTrails()
+        this.initModalTest()
+    },
+    updated () {
+        // this.initModalTest()
     },
     methods: {
-        // testTheThing () {
-        //     console.log('boop')
-        // },
-        // toggleHidden (element) {
-        //     // toggle hidden/visible with key to isHidden object passed as string parameter
-        //     if (this.isHidden[element]) {
-        //         this.isHidden[element] = false
-        //     } else {
-        //         this.isHidden[element] = true
-        //     }
-        // },
-        // loadPage () {
-        //     axios ({
-        //         method: 'get',
-        //         url: '/test/test-trail-1'
-        //     }).then(res => {
-        //         console.log('boop')
-        //         console.log(res.data)
-        //     })
-        // },
+        initModalTest () {
+            var modals = document.querySelectorAll('.modal')
+            modals.forEach(modal => {
+                // modalid = modal.getAttribute('id')
+                // modalid = '#' + modalid
+                $('.modal').modal();
+            })
+        },
         isThisATrail () {
             // use URL to determine if current page is a trail
             const host = window.location.host
@@ -83,11 +69,14 @@ const app = Vue.createApp({
                 }).then(res => {
                     // console.log(res.data.photos)
                     this.trailPhotos = res.data.photos
-                    this.trailPhotos.forEach(eachPhoto => {
+                    this.trailPhotos.forEach((eachPhoto, i) => {
                         eachPhoto.photoHREF = `#photo${eachPhoto.id}`
                         eachPhoto.photoID = `photo${eachPhoto.id}`
                     })
                     this.trailAssets = res.data.trail
+                    // $(document).ready(function(){
+                    //     $('.modal').modal();
+                    // })
                 })
             }
         },
@@ -101,29 +90,77 @@ const app = Vue.createApp({
                 })
             }
         },
-        addTrailPhotos () {
-            // this.newPhotos = []
-            axios({
-                method: 'post',
-                url: `/trail/${this.thisTrail}/add_trail_photos`,
-                data: {
-                    photos: this.newPhotos
-                },
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'X-CSRFToken': this.csrf_token,
-                }
-            }).then(res => {
-                console.log(res)
-                this.afterTrailPhotoUpload
-            })
-        },
-        afterTrailPhotoUpload () {
-            console.log('we made it to .then')
-        },
-        savePhotoCaptions () {
+        selectNewTrailPhotos () {
+            console.log('selectNewTrailPhotos start')
+            Array.from(this.$refs.trailphotofile.files).forEach(file => {
+                this.uploadNewTrailPhotos(file)
 
+                this.newPhotos.push({
+                    'name': file.name,
+                    'status': 'is uploading',
+                })
+            })
+            console.log('selectNewTrailPhotos end')
         },
+        uploadNewTrailPhotos (file) {
+            console.log('uploadNewTrailPhoto start')
+
+            this.addNewTrailPhotos(file)
+            .then(res => {
+                this.newPhotos.forEach(newPhoto => {
+                    if (newPhoto.name === file.name) {
+                        newPhoto['status'] = 'is uploaded'
+                    }
+                })
+                this.getTrailAssets()
+            })
+            .catch(error => {
+                console.log(error)
+                this.newPhotos.forEach(newPhoto => {
+                    if (newPhoto.name === file.name) {
+                        newPhoto['status'] = 'failed'
+                    }
+                })
+            })
+            console.log('uploadNewTrailPhoto start')
+        },
+        addNewTrailPhotos (file) {
+            console.log('addNewTrailPhotos start')
+            let formData = new FormData()
+            formData.append('photo', file)
+
+            return axios
+                .post(`/trail/${this.thisTrail}/add_trail_photos`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken': this.csrf_token,
+                    }
+                })
+        },
+        // addTrailPhotos () {
+        //     console.log(this.newPhotos)
+        //     // this.newPhotos = []
+        //     axios({
+        //         method: 'post',
+        //         url: `/trail/${this.thisTrail}/add_trail_photos`,
+        //         data: {
+        //             photos: this.newPhotos
+        //         },
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data',
+        //             'X-CSRFToken': this.csrf_token,
+        //         }
+        //     }).then(res => {
+        //         console.log(res)
+        //         this.afterTrailPhotoUpload
+        //     })
+        // },
+        // afterTrailPhotoUpload () {
+        //     console.log('we made it to .then')
+        // },
+        // savePhotoCaptions () {
+
+        // },
         testToggle () {
             this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
             this.trailAssets.mesh = '/uploads/mt-hood/mesh.obj'

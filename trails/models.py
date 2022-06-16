@@ -1,11 +1,15 @@
 from tkinter import CASCADE
 from django.db import models
-from django.forms import CharField
-# from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 
 from users.models import CustomUser
+
+from PIL import Image, ImageOps
+from io import StringIO
+import os
 
 SHARE_SETTINGS = (
     ('private','Private'),
@@ -24,6 +28,9 @@ def trail_file_location(self, filename):
 
 def photo_location(self, filename):
     return f'{self.parent_trail.slug}/photos/{filename}'
+
+def thumb_location(self, filename):
+    return f'{self.parent_trail.slug}/photos/thumb-{filename}'
 
 def heightmap_location(self, filename):
     return f'{self.slug}/heightmap_{filename}'
@@ -97,10 +104,45 @@ class Photo(models.Model):
     parent_waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     photo = models.ImageField(upload_to=photo_location)
+    thumb = models.ImageField(upload_to=thumb_location, null=True, blank=True)
     caption = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f'{self.parent_trail.slug}-{self.id}'
+
+    def create_thumb(self):
+        if not self.photo:
+            pass
+
+        THUMB_SIZE = (150,150)
+
+        DJANGO_TYPE = self.photo.file.content_type
+
+        if DJANGO_TYPE == 'image/jpeg':
+            PIL_TYPE = 'jpeg'
+        elif DJANGO_TYPE == 'image/png':
+            PIL_TYPE = 'png'
+        elif DJANGO_TYPE == 'image/webp':
+            PIL_TYPE = 'webp'
+        elif DJANGO_TYPE == 'image/gif':
+            PIL_TYPE = 'gif'
+    
+        original_photo = Image.open(self.photo)
+
+        thumb = ImageOps.fit(original_photo, THUMB_SIZE, Image.ANTIALIAS, centering=(0.5,0.5))
+
+        thumb.save(f'{settings.MEDIA_ROOT}/{self.parent_trail.slug}/photos/thumb-{self.photo.name}', PIL_TYPE)
+
+        self.thumb.name = f'{self.parent_trail.slug}/photos/thumb-{self.photo.name}'
+    
+    def save(self, *args, **kwargs):
+        self.create_thumb()
+        force_update = False
+
+        if self.id:
+            force_update = True
+
+        super(Photo, self).save(force_update=force_update)
 
 class Comment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

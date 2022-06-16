@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, Textarea, FileInput
 
-from .models import Trail
+from .models import Trail, Photo
 
 class NewTrailForm(ModelForm):
     class Meta:
@@ -21,5 +21,15 @@ class NewTrailForm(ModelForm):
             }),
             'trail_file': FileInput(attrs={
                 'class': '',
+            })
+        }
+
+class AddTrailPhoto(ModelForm):
+    class Meta:
+        model = Photo
+        fields = ['photo',]
+        widgets = {
+            'photo': FileInput(attrs={
+                'class':'',
             })
         }

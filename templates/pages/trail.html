@@ -22,23 +22,15 @@
     <div>
         <p>[[ trailAssets.desc ]]</p>
         <a href="#" @click="testToggle">test toggle</a>
-        <!-- MATERIALBOX VERSION - limited -->
-        <!-- <div id="trail-photos">
-            <figure v-for="photo in trailPhotos">
-                <img class="materialboxed" :src="photo.url" :alt="photo.caption" :data-caption="photo.caption"> -->
-                <!-- <figcaption>[[ photo.caption ]]</figcaption> -->
-                <!-- <figcaption>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</figcaption> -->
-            <!-- </figure>
-        </div> -->
-        <!-- MODAL VERSION - less limited -->
+        <a href="#" @click="initModalTest">init modal test</a>
         <div id="trail-photos-container" v-if="trailPhotos.length">
             <h4>
                 Photos
             </h4>
-            <div id="trail-photos">
-                <figure v-for="photo in trailPhotos">
+            <div id="trail-photos" ref="trailPhotos">
+                <figure v-for="photo in trailPhotos" :key="photo.id">
                     <a :href="photo.photoHREF" class="modal-trigger">
-                        <img :src="photo.url" :alt="photo.caption" class="modal-thumb">
+                        <img :src="photo.thumb" :alt="photo.caption" class="modal-thumb">
                     </a>
                     <div :id="photo.photoID" class="modal">
                         <div class="modal-content">
@@ -218,19 +210,37 @@
 {% endblock %}
 
 {% block modals %}
+    {% if trail.upload_user == request.user %} 
     <!-- Add Photos Modal -->
     <div id="modal-add-photos" class="modal bottom-sheet">
         <div class="modal-content">
             <h4>Upload photos</h4>
-            <form @submit.prevent="addTrailPhotos">
-                <input v-model="newPhotos" type="file" name="test" id="test" multiple="multiple">
+            <div class="file-field input-field">
+                <div class="btn">
+                    <span>Choose a file...</span>
+                    <input type="file" ref="trailphotofile" @change="selectNewTrailPhotos" accept=".jpg,.jpeg,.png,.gif,.webp" multiple>
+                    <input type="hidden" value="{{ request.user }}">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
+            </div>
+            <!-- <button v-if="newPhotos.length" @click="uploadNewTrailPhotos">Upload</button> -->
+            <div v-if="newPhotos.length">
+                <p v-for="newPhoto in newPhotos">
+                    [[ newPhoto.name ]] [[ newPhoto.status ]]
+                </p>
+            </div>
+            <!-- <form @submit.prevent="addTrailPhotos">
+                <input type="file" @change="uploadFile" multiple>
                 <input type="submit" value="send em">
-            </form>
+            </form> -->
         </div>
-        <div class="modal-footer">
+        <!-- <div class="modal-footer">
             <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-        </div>
+        </div> -->
     </div>
+    {% endif %}
     <!-- User Trails Modal -->
     <div id="modal-user-trails" class="modal bottom-sheet">
         <div class="modal-content">
