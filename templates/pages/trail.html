@@ -22,13 +22,13 @@
     <div>
         <p>[[ trailAssets.desc ]]</p>
         <a href="#" @click="testToggle">test toggle</a>
-        <a href="#" @click="initModalTest">init modal test</a>
+        <!-- <a href="#" @click="initModals">init modal test</a> -->
         <div id="trail-photos-container" v-if="trailPhotos.length">
             <h4>
                 Photos
             </h4>
             <div id="trail-photos" ref="trailPhotos">
-                <figure v-for="photo in trailPhotos" :key="photo.id">
+                <figure v-for="photo in showThumb" :key="photo.id">
                     <a :href="photo.photoHREF" class="modal-trigger">
                         <img :src="photo.thumb" :alt="photo.caption" class="modal-thumb">
                     </a>
@@ -45,10 +45,11 @@
                     </div>
                 </figure>
             </div>
+            <span>1-[[ numThumb ]] of [[ trailPhotos.length ]] <a href="#modal-all-photos" class="modal-trigger">(view all photos)</a></span>
         </div>
     </div>
 
-    <aside>
+    <aside id="aside">
         {% if trail.upload_user == request.user %}
         <a class="modal-trigger" href="#modal-add-photos">Add Photos</a>
         {% endif %}
@@ -250,6 +251,28 @@
                     <a :href="trail.slug">[[ trail.name ]]</a> - <em>added [[ new Date(trail.timestamp).toLocaleDateString() ]]</em>
                 </li>
             </ul>
+        </div>
+    </div>
+    <!-- All Photos Modal -->
+    <div id="modal-all-photos" class="modal bottom-sheet">
+        <div id="trail-photos-container" class="modal-content">
+            <div id="trail-photos" ref="trailPhotos">
+                <figure v-for="photo in trailPhotos" :key="photo.id">
+                    <a :href="photo.photoHREF" class="modal-trigger">
+                        <img :src="photo.thumb" :alt="photo.caption" class="modal-thumb">
+                    </a>
+                    <div :id="photo.photoID" class="modal">
+                        <div class="modal-content">
+                            <img :src="photo.url" :alt="photo.caption" class="inside-modal">
+                            <p>[[ photo.caption ]]</p>
+                            <p><em>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</em></p>
+                        </div>
+                    </div>
+                </figure>
+            </div>
+            <!-- <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+            </div> -->
         </div>
     </div>
 {% endblock %}

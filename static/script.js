@@ -1,8 +1,3 @@
-// init materialize modals
-// $(document).ready(function(){
-//     $('.modal').modal();
-// })
-
 // materialize text entry char counter
 $(document).ready(function() {
     $('input#id_name, textarea#id_desc').characterCounter();
@@ -18,30 +13,59 @@ const app = Vue.createApp({
             trailAssets: {},
             userTrails: [],
             newPhotos: [],
+            trailThumbsWidth: 0,
+            numThumb: 2,
+            showThumb: [],
         }
     },
     delimiters: ['[[', ']]'],
     created () {
         this.isThisATrail()
         this.getCurrentTrail()
-        this.getTrailAssets(this.thisTrail)
+        this.getTrailAssets()
     },
     mounted () {
         const input = document.querySelector('input[name="csrfmiddlewaretoken"]')
         this.csrf_token = input.value
         this.getUserTrails()
-        this.initModalTest()
+        this.initModals()
+        this.initAddPhotoModal()
+        this.$nextTick(() => {
+            setTimeout(() => {
+                this.getDimensions()
+            },100)
+        })
+        window.addEventListener('resize', this.getDimensions)
     },
     updated () {
-        // this.initModalTest()
+        console.log(this.trailThumbsWidth)
+        this.initModals()
     },
     methods: {
-        initModalTest () {
-            var modals = document.querySelectorAll('.modal')
+        getDimensions () {
+            // windowWidth = window.innerWidth
+            // asideWidth = document.getElementById('aside').clientWidth
+            // console.log(`window ${windowWidth}`)
+            // console.log(`aside ${asideWidth}`)
+            // this.trailThumbsWidth = windowWidth - asideWidth
+            this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth
+            this.numTrailThumbs()
+        },
+        numTrailThumbs () {
+            this.numThumb = Math.floor(this.trailThumbsWidth / 150)
+            this.showThumb = this.trailPhotos.slice(`-${this.numThumb}`,)
+        },
+        initModals () {
+            var modals = document.querySelectorAll('.modal:not(#modal-add-photos')
             modals.forEach(modal => {
-                // modalid = modal.getAttribute('id')
-                // modalid = '#' + modalid
-                $('.modal').modal();
+                $(modal).modal();
+            })
+        },
+        initAddPhotoModal () {
+            $('#modal-add-photos').modal({
+                onCloseEnd: _ => {
+                    this.getTrailAssets()
+                }
             })
         },
         isThisATrail () {
@@ -59,7 +83,6 @@ const app = Vue.createApp({
                     this.thisTrail = this.thisTrail.slice(0,this.thisTrail.indexOf('#'))
                 }
             }
-            // FUTURE NOTE - a user could break this by including a "#" in their trail name (which hopefully they wouldn't do but you never know)
         },
         getTrailAssets () {
             if (this.isTrail) {
@@ -74,9 +97,6 @@ const app = Vue.createApp({
                         eachPhoto.photoID = `photo${eachPhoto.id}`
                     })
                     this.trailAssets = res.data.trail
-                    // $(document).ready(function(){
-                    //     $('.modal').modal();
-                    // })
                 })
             }
         },
@@ -112,7 +132,7 @@ const app = Vue.createApp({
                         newPhoto['status'] = 'is uploaded'
                     }
                 })
-                this.getTrailAssets()
+                // this.getTrailAssets()
             })
             .catch(error => {
                 console.log(error)

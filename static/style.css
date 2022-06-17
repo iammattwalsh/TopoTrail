@@ -118,7 +118,8 @@ nav ul a:hover {
 
 #trail-photos {
     display: flex;
-    flex-wrap: wrap-reverse;
+    flex-wrap: wrap;
+    justify-content: space-between;
     padding:0px;
 }
 

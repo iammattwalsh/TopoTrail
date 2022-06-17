@@ -108,6 +108,7 @@ async def process_upload(request, slug):
 def new_trail(request):
     if request.method == 'POST':
         name = request.POST.get('name')
+        name = name.replace('#','').replace('/','')
         desc = request.POST.get('desc')
         trail_file = request.FILES.get('trail_file')
         upload_user = request.user
@@ -223,16 +224,18 @@ def get_user_trails (request,slug):
         user_trails.append(this_trail)
     return JsonResponse(data={'user_trails':user_trails})
 
+@login_required
 def add_trail_photos(request,slug):
-    print('hello are you working')
-    if request.FILES:
-        form = AddTrailPhoto(request.POST, request.FILES)
+    trail_object = get_object_or_404(Trail, slug=slug)
+    if request.user == trail_object.upload_user:
+        if request.FILES:
+            form = AddTrailPhoto(request.POST, request.FILES)
 
-        if form.is_valid():
-            form.instance.user = request.user
-            form.instance.parent_trail = get_object_or_404(Trail, slug=slug)
-            form.save()
-        return JsonResponse({'success': True})
+            if form.is_valid():
+                form.instance.user = request.user
+                form.instance.parent_trail = trail_object
+                form.save()
+            return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
 ####################
