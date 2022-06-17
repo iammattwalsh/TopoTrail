@@ -38,7 +38,7 @@ section {
     display: flex;
 }
 
-section div {
+#maincontainer {
     padding: 10px;
 }
 
@@ -52,7 +52,7 @@ section aside {
 
 header {
     background-color: rgb(var(--green));
-    padding: 10px;
+    padding-top: 10px;
     text-align: center;
 }
 
@@ -73,7 +73,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 5px;
 }
 
-nav .brand-logo {
+#mainnav .brand-logo {
     font-family: 'Rokkitt', serif;
     font-weight: bold;
     transition: .4s;
@@ -81,28 +81,78 @@ nav .brand-logo {
     text-decoration: double underline rgba(var(--dark),0) 3px;
 }
 
-nav .brand-logo:hover {
+#mainnav .brand-logo:hover {
     color: rgb(var(--yellow));
     text-decoration: double underline rgba(var(--yellow),1) 3px;
 }
 
-nav {
+#mainnav {
     border-bottom: 3px double rgb(var(--dark));
 }
 
-nav ul a, nav a {
+#mainnav ul a, nav a {
     /* color: var(--purple); */
     color: rgb(var(--dark));
     transition: .4s;
     text-decoration: underline rgba(var(--dark),0) 3px;
 }
 
-nav ul a:hover, nav a:hover {
+#mainnav ul a:hover {
     color: rgb(var(--green));
     text-decoration: underline rgba(var(--green),1) 3px;
 }
 
-nav ul a {
+nav a:hover {
+    color: rgb(var(--green));
+    text-decoration-color: transparent;
+}
+
+#traileditnav a {
+    height:48px;
+    line-height: 48px;
+    display: inline-flex;
+}
+
+.tabs.tabs-transparent .tab a, .tabs.tabs-transparent li {
+    background-color: rgba(127,127,127,0);
+    height: 48px;
+}
+
+.tabs.tabs-transparent .tab a span, .tabs.tabs-transparent li span {
+    color: rgb(var(--light));
+    text-decoration: underline rgba(var(--light),0) 3px;
+    transition: .4s;
+}
+
+.tabs.tabs-transparent .tab a:hover, .tabs.tabs-transparent li:hover {
+    background-color: rgba(127,127,127,.15);
+}
+
+.tabs.tabs-transparent .tab a:hover span, .tabs.tabs-transparent li:hover span {
+    color: rgb(var(--green));
+    text-decoration: underline rgba(var(--green),1) 3px;
+}
+
+#traileditnav i, #traileditnav i.material-icons {
+    height:48px;
+    line-height: 48px;
+    /* text-decoration: none; */
+}
+
+.tabs.tabs-transparent .tab a i, .tabs.tabs-transparent li i {
+    color: rgb(var(--light));
+    /* text-decoration: underline rgba(127,127,127,.0) 3px; */
+    /* text-decoration: none; */
+    transition: .4s;
+}
+
+.tabs.tabs-transparent .tab a:hover i, .tabs.tabs-transparent li:hover i {
+    color: rgb(var(--green));
+    /* text-decoration: underline rgba(127,127,127,.15) 3px; */
+    /* text-decoration: none; */
+}
+
+#mainnav ul a {
     /* outline:3px double rgba(0,0,0,0); */
     /* outline-offset:-3px; */
 }
@@ -112,8 +162,13 @@ nav ul a:hover {
     /* outline:3px double rgba(0,0,0,1); */
 }
 
-#trail-photos-container {
+section div:first-child {
+    width: 100%;
+}
+
+#trail-photos-container, #trail-comment-container {
     padding: 0px;
+    width: 100%;
 }
 
 #trail-photos {
@@ -121,6 +176,9 @@ nav ul a:hover {
     flex-wrap: wrap;
     justify-content: space-between;
     padding:0px;
+    width: 100%;
+    min-height: 1px;
+    box-sizing: border-box;
 }
 
 #trail-photos figure {
@@ -166,4 +224,22 @@ nav ul a:hover {
 
 .hidden {
     display: none;
+}
+
+.collapsible-header i {
+    line-height: 1;
+}
+
+#traileditnav {
+    height: 48px;
+    display: flex;
+    justify-content: center;
+}
+
+canvas {
+    max-width: 100%;
+}
+
+footer {
+    text-align: center;
 }

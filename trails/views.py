@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
 from .models import Trail, Waypoint, Photo, Comment, Rating, TrailType
-from .forms import NewTrailForm, AddTrailPhoto
+from .forms import NewTrailForm, AddTrailPhoto, AddTrailComment
 
 import asyncio
 import json
@@ -31,36 +31,6 @@ path = pathlib.Path(__file__).parent.parent.resolve()
 # VIEW FUNCTIONS #
 ##################
 
-# def vue_test(request):
-#     return render(request, 'pages/vue_test.html')
-
-# def vue_test_2(request, slug):
-#     trail = get_object_or_404(Trail, slug=slug)
-#     file_type, coords, coord_min, coord_max, coord_mid = parse_trail_file(trail)
-
-#     context = {
-#         'file_type': file_type,
-#         'coords': coords,
-#         'coord_min': coord_min,
-#         'coord_max': coord_max,
-#         'coord_mid': coord_mid,
-#     }
-#     return JsonResponse(data=context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def home(request):
     context = {
         'new_trail_form': NewTrailForm(),
@@ -73,7 +43,6 @@ async def process_upload(request, slug):
     # trail = Trail.objects.get(slug=slug)
     # parse trail_file with helper function
     file_type, coords, coord_min, coord_max, coord_mid = parse_trail_file(trail)
-
 
 
     # BELOW LINES ONLY EXIST FOR REFERENCE
@@ -113,12 +82,14 @@ def new_trail(request):
         trail_file = request.FILES.get('trail_file')
         upload_user = request.user
         timestamp = timezone.now()
+        share_future = request.POST.get('share_future')
         Trail.objects.create(
             name=name,
             desc=desc,
             trail_file=trail_file,
             upload_user=upload_user,
-            timestamp=timestamp
+            timestamp=timestamp,
+            share_future=share_future,
         )
         this_trail = get_object_or_404(Trail, upload_user=request.user, timestamp=timestamp)
         return redirect('trails:process_upload', slug=this_trail.slug)
@@ -127,6 +98,7 @@ def new_trail(request):
     }
     return render(request, 'pages/new_trail.html', context)
 
+@login_required
 def edit_trail(request, slug):
     # get trail object
     trail = get_object_or_404(Trail, slug=slug)
@@ -135,10 +107,21 @@ def edit_trail(request, slug):
         raise Http404
     else:
         if request.method == 'POST':
-            trail.desc = request.POST.get('desc')
+            print('is request.post')
+            print(request.POST.get('desc'))
+            print(request.POST.get('share'))
+            if request.POST.get('desc') != None:
+                print('has desc data')
+                trail.desc = request.POST.get('desc')
+            if request.POST.get('share') != None:
+                print('has share data')
+                trail.share = request.POST.get('share')
             trail.save()
-            return redirect('trails:view_trail', slug=trail.slug)
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+            # return redirect('trails:view_trail', slug=trail.slug)
 
+@login_required
 def delete_trail(request, slug):
     # get trail object
     trail = get_object_or_404(Trail, slug=slug)
@@ -197,7 +180,8 @@ def get_trail_assets(request,slug):
         trail['texture_sat'] = trail_object.texture_sat.url
     if trail_object.texture_trail:
         trail['texture_trail'] = trail_object.texture_trail.url
-    photo_objects = get_list_or_404(Photo, parent_trail=trail_object)
+    # photo_objects = get_list_or_404(Photo, parent_trail=trail_object)
+    photo_objects = Photo.objects.filter(parent_trail=trail_object)
     photos = []
     for photo_object in photo_objects:
         photos.append({
@@ -208,7 +192,16 @@ def get_trail_assets(request,slug):
             'user': photo_object.user.username,
             'id': photo_object.id,
         })
-    return JsonResponse(data={'photos':photos,'trail':trail})
+    # comment_objects = get_list_or_404(Comment, parent_trail=trail_object)
+    comment_objects = Comment.objects.filter(parent_trail=trail_object)
+    comments = []
+    for comment_object in comment_objects:
+        comments.append({
+            'user': comment_object.user.username,
+            'timestamp': comment_object.timestamp,
+            'comment': comment_object.comment,
+        })
+    return JsonResponse(data={'photos':photos,'trail':trail, 'comment':comments,})
 
 def get_user_trails (request,slug):
     trail_object = get_object_or_404(Trail, slug=slug)
@@ -241,6 +234,21 @@ def add_trail_photos(request,slug):
             return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
+@login_required
+def add_trail_comment(request,slug):
+    trail_object = get_object_or_404(Trail, slug=slug)
+    if request.method == 'POST':
+        # data = json.loads(request.body)
+        # comment = data.get('comment')
+        form = AddTrailComment(request.POST)
+
+        if form.is_valid():
+            form.instance.user = request.user
+            form.instance.parent_trail = trail_object
+            form.save()
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
 ####################
 # HELPER FUNCTIONS #
 ####################
@@ -254,6 +262,9 @@ def check_status(trail):
         trail.save()
     else:
         trail.status_overall = (trail.status_parsed + trail.status_waypoints + trail.status_heightmap + trail.status_mesh + trail.status_texture_trail + trail.status_texture_satellite) / 6
+        trail.save()
+    if trail.status_mesh and trail.status_texture_trail:
+        trail.share = trail.share_future
         trail.save()
 
 def update_trail_rating(trail):

@@ -12,8 +12,5 @@ urlpatterns = [
     path('trail/<slug:slug>/get_trail_assets', views.get_trail_assets, name = 'get_trail_assets'),
     path('trail/<slug:slug>/get_user_trails', views.get_user_trails, name = 'get_user_trails'),
     path('trail/<slug:slug>/add_trail_photos', views.add_trail_photos, name = 'add_trail_photos'),
-
-
-    # path('test', views.vue_test, name = 'vue_test'),
-    # path('test/<slug:slug>', views.vue_test_2, name = 'vue_test_2'),
+    path('trail/<slug:slug>/add_trail_comment', views.add_trail_comment, name = 'add_trail_comment'),
 ]

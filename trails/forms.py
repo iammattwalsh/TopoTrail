@@ -1,7 +1,12 @@
-from django.forms import ModelForm, TextInput, Textarea, FileInput
+from django.forms import ModelForm, TextInput, Textarea, FileInput, Select
 
-from .models import Trail, Photo
+from .models import Trail, Photo, Comment
 
+SHARE_SETTINGS = (
+    ('private','Private'),
+    ('public','Public'),
+    ('link','Link'),
+)
 class NewTrailForm(ModelForm):
     class Meta:
         model = Trail
@@ -9,6 +14,7 @@ class NewTrailForm(ModelForm):
             'name',
             'desc',
             'trail_file',
+            'share_future',
         ]
         widgets = {
             'name': TextInput(attrs={
@@ -21,7 +27,12 @@ class NewTrailForm(ModelForm):
             }),
             'trail_file': FileInput(attrs={
                 'class': '',
-            })
+            }),
+            # 'share_future': TextInput(attrs={
+            #     'class': '',
+            #     'data-length': 7,
+            # }),
+            'share_future': Select(choices=SHARE_SETTINGS),
         }
 
 class AddTrailPhoto(ModelForm):
@@ -31,5 +42,16 @@ class AddTrailPhoto(ModelForm):
         widgets = {
             'photo': FileInput(attrs={
                 'class':'',
+            })
+        }
+
+class AddTrailComment(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['comment',]
+        widgets = {
+            'comment': Textarea(attrs={
+                'class': '',
+                'data-length': 500,
             })
         }

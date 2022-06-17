@@ -1,8 +1,3 @@
-// materialize text entry char counter
-$(document).ready(function() {
-    $('input#id_name, textarea#id_desc').characterCounter();
-})
-
 const app = Vue.createApp({
     data () {
         return {
@@ -16,6 +11,17 @@ const app = Vue.createApp({
             trailThumbsWidth: 0,
             numThumb: 2,
             showThumb: [],
+            newComment: '',
+            trailComments: [],
+            editedDesc: '',
+            trailDescEdit: true,
+            editedShare: '',
+            shareOptions: {
+                'private':'Private',
+                'public':'Public',
+                'link':'Share with link'
+            }
+
         }
     },
     delimiters: ['[[', ']]'],
@@ -30,6 +36,8 @@ const app = Vue.createApp({
         this.getUserTrails()
         this.initModals()
         this.initAddPhotoModal()
+        this.initMaterializeComps()
+        this.initMaterializeCharCount()
         this.$nextTick(() => {
             setTimeout(() => {
                 this.getDimensions()
@@ -38,8 +46,9 @@ const app = Vue.createApp({
         window.addEventListener('resize', this.getDimensions)
     },
     updated () {
-        console.log(this.trailThumbsWidth)
+        // console.log(this.trailThumbsWidth)
         this.initModals()
+        this.initMaterializeCharCount()
     },
     methods: {
         getDimensions () {
@@ -48,7 +57,11 @@ const app = Vue.createApp({
             // console.log(`window ${windowWidth}`)
             // console.log(`aside ${asideWidth}`)
             // this.trailThumbsWidth = windowWidth - asideWidth
-            this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth
+            if (this.trailThumbsWidth == 0) {
+                this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth - 20
+            } else {
+                this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth
+            }
             this.numTrailThumbs()
         },
         numTrailThumbs () {
@@ -67,6 +80,20 @@ const app = Vue.createApp({
                     this.getTrailAssets()
                 }
             })
+        },
+        initMaterializeCharCount () {
+            // materialize text entry char counter
+            $('input#id_name, textarea#id_desc, textarea#id_comment, textarea#edittraildesc').characterCounter();
+        },
+        initMaterializeComps () {
+            // materialize collabsible
+            $('.collapsible').collapsible({
+                accordion: false
+            });
+            // materialize sidenav
+            $('.sidenav').sidenav();
+            // materialize form selectbox
+            $('select').formSelect();
         },
         isThisATrail () {
             // use URL to determine if current page is a trail
@@ -90,13 +117,14 @@ const app = Vue.createApp({
                     method: 'get',
                     url: `/trail/${this.thisTrail}/get_trail_assets`
                 }).then(res => {
-                    // console.log(res.data.photos)
                     this.trailPhotos = res.data.photos
                     this.trailPhotos.forEach((eachPhoto, i) => {
                         eachPhoto.photoHREF = `#photo${eachPhoto.id}`
                         eachPhoto.photoID = `photo${eachPhoto.id}`
                     })
                     this.trailAssets = res.data.trail
+                    this.trailComments = res.data.comment
+                    this.numTrailThumbs()
                 })
             }
         },
@@ -111,7 +139,7 @@ const app = Vue.createApp({
             }
         },
         selectNewTrailPhotos () {
-            console.log('selectNewTrailPhotos start')
+            // console.log('selectNewTrailPhotos start')
             Array.from(this.$refs.trailphotofile.files).forEach(file => {
                 this.uploadNewTrailPhotos(file)
 
@@ -120,11 +148,10 @@ const app = Vue.createApp({
                     'status': 'is uploading',
                 })
             })
-            console.log('selectNewTrailPhotos end')
+            // console.log('selectNewTrailPhotos end')
         },
         uploadNewTrailPhotos (file) {
-            console.log('uploadNewTrailPhoto start')
-
+            // console.log('uploadNewTrailPhoto start')
             this.addNewTrailPhotos(file)
             .then(res => {
                 this.newPhotos.forEach(newPhoto => {
@@ -142,10 +169,10 @@ const app = Vue.createApp({
                     }
                 })
             })
-            console.log('uploadNewTrailPhoto start')
+            // console.log('uploadNewTrailPhoto start')
         },
         addNewTrailPhotos (file) {
-            console.log('addNewTrailPhotos start')
+            // console.log('addNewTrailPhotos start')
             let formData = new FormData()
             formData.append('photo', file)
 
@@ -157,30 +184,46 @@ const app = Vue.createApp({
                     }
                 })
         },
-        // addTrailPhotos () {
-        //     console.log(this.newPhotos)
-        //     // this.newPhotos = []
-        //     axios({
-        //         method: 'post',
-        //         url: `/trail/${this.thisTrail}/add_trail_photos`,
-        //         data: {
-        //             photos: this.newPhotos
-        //         },
-        //         headers: {
-        //             'Content-Type': 'multipart/form-data',
-        //             'X-CSRFToken': this.csrf_token,
-        //         }
-        //     }).then(res => {
-        //         console.log(res)
-        //         this.afterTrailPhotoUpload
-        //     })
-        // },
-        // afterTrailPhotoUpload () {
-        //     console.log('we made it to .then')
-        // },
-        // savePhotoCaptions () {
+        addTrailComment () {
+            console.log('start add trail comment')
+            let formData = new FormData()
+            formData.append('comment',this.newComment)
+            console.log('get form data')
+            console.log(formData)
+            return axios
+                .post(`/trail/${this.thisTrail}/add_trail_comment`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken': this.csrf_token,
+                    }
+                })
+                .then(
+                    this.newComment = ''
+                )
+        },
+        toggleTrailDescEdit () {
+            this.trailDescEdit ? this.trailDescEdit = false : this.trailDescEdit = true
+        },
+        updateEditedDesc () {
+            this.editedDesc = this.trailAssets.desc
+        },
 
-        // },
+        editTrail () {
+            let formData = new FormData()
+            if (this.editedDesc) {
+                formData.append('desc',this.editedDesc)
+            }
+            if (this.editedShare) {
+                formData.append('share',this.editedShare)
+            }
+            return axios
+                .post(`/trail/${this.thisTrail}/edit`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken': this.csrf_token,
+                    }
+                })
+        },
         testToggle () {
             this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
             this.trailAssets.mesh = '/uploads/mt-hood/mesh.obj'
