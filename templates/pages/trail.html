@@ -246,11 +246,12 @@
     <div id="modal-user-trails" class="modal bottom-sheet">
         <div class="modal-content">
             <h4>Trails added by [[ trailAssets.upload_user ]]</h4>
-            <ul>
+            <ul v-if="userTrails.length">
                 <li v-for="trail in userTrails">
                     <a :href="trail.slug">[[ trail.name ]]</a> - <em>added [[ new Date(trail.timestamp).toLocaleDateString() ]]</em>
                 </li>
             </ul>
+            <p v-else>Uh-oh, this user doesn't seem to have any publicly available trails!</p>
         </div>
     </div>
     <!-- All Photos Modal -->

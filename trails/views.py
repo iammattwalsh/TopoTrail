@@ -154,7 +154,7 @@ def view_trail(request, slug):
     # get trail object
     trail = get_object_or_404(Trail, slug=slug)
     # get waypoint objects
-    trail_waypoints = Waypoint.objects.filter(parent_trail=trail)
+    trail_waypoints = get_list_or_404(Waypoint, parent_trail=trail)
 
     context = {
         'new_trail_form': NewTrailForm(),
@@ -197,7 +197,7 @@ def get_trail_assets(request,slug):
         trail['texture_sat'] = trail_object.texture_sat.url
     if trail_object.texture_trail:
         trail['texture_trail'] = trail_object.texture_trail.url
-    photo_objects = Photo.objects.filter(parent_trail=trail_object)
+    photo_objects = get_list_or_404(Photo, parent_trail=trail_object)
     photos = []
     for photo_object in photo_objects:
         photos.append({
@@ -212,7 +212,10 @@ def get_trail_assets(request,slug):
 
 def get_user_trails (request,slug):
     trail_object = get_object_or_404(Trail, slug=slug)
-    user_trail_objects = Trail.objects.filter(upload_user=trail_object.upload_user)
+    if trail_object.upload_user == request.user:
+        user_trail_objects = get_list_or_404(Trail, upload_user=trail_object.upload_user)
+    else:
+        user_trail_objects = get_list_or_404(Trail, upload_user=trail_object.upload_user, share='public')
     user_trails = []
     for trail in user_trail_objects:
         this_trail = {
