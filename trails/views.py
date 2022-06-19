@@ -243,6 +243,35 @@ def add_trail_comment(request,slug):
             return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
+def get_all_trails(request):
+    trail_objects = get_list_or_404(Trail, share='public')
+    if request.user.is_authenticated:
+        user_trail_objects = Trail.objects.filter(upload_user=request.user)
+    trail_list = []
+    for trail in trail_objects:
+        this_trail = {
+            'name': trail.name,
+            'slug': trail.slug,
+            'upload_user': trail.upload_user.username,
+            'share': trail.share,
+            'timestamp': trail.timestamp,
+            'average_rating': trail.average_rating,
+        }
+        trail_list.append(this_trail)
+    if request.user.is_authenticated:
+        for trail in user_trail_objects:
+            if trail.share != 'public':
+                this_trail = {
+                    'name': trail.name,
+                    'slug': trail.slug,
+                    'upload_user': trail.upload_user.username,
+                    'share': trail.share,
+                    'timestamp': trail.timestamp,
+                    'average_rating': trail.average_rating,
+                }
+                trail_list.append(this_trail)
+    return JsonResponse(data={'trail_list':trail_list})
+
 ####################
 # HELPER FUNCTIONS #
 ####################

@@ -66,7 +66,7 @@
                     </div>
                 </figure>
             </div>
-            <span v-if="trailPhotos.length">[[ numThumb ]] newest of <a href="#modal-all-photos" class="modal-trigger" title="view all photos">[[ trailPhotos.length ]] <i class="material-icons">photo_library</i></a> <a href="#modal-add-photos" class="modal-trigger" title="add new photos"><i class="material-icons">add_a_photo</i></a></span>
+            <span v-if="trailPhotos.length">[[ numThumb ]] newest of <a href="#modal-all-photos" class="modal-trigger" title="view all photos">[[ trailPhotos.length ]] <i class="material-icons">photo_library</i></a>{% if trail.upload_user == request.user %} <a href="#modal-add-photos" class="modal-trigger" title="add new photos"><i class="material-icons">add_a_photo</i></a>{% endif %}</span>
             <div id="trail-photos" v-else>
                 <span>There are no photos currently. {% if trail.upload_user == request.user %}<a href="#modal-add-photos" class="modal-trigger" title="add new photos"><i class="material-icons">add_a_photo</i> Add photos now.</a>{% endif %}</span>
             </div>
@@ -104,6 +104,7 @@
             {% endif %}
         </div>
     </div>
+    <a href="#" @click="getAllTrails">asdf</a>
 </section>
 
 {% if trail.mesh and trail.texture_trail %}

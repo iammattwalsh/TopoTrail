@@ -129,27 +129,22 @@ nav a:hover {
 }
 
 .tabs.tabs-transparent .tab a:hover span, .tabs.tabs-transparent li:hover span {
-    color: rgb(var(--green));
-    text-decoration: underline rgba(var(--green),1) 3px;
+    color: rgb(var(--yellow));
+    text-decoration: underline rgba(var(--yellow),1) 3px;
 }
 
 #traileditnav i, #traileditnav i.material-icons {
     height:48px;
     line-height: 48px;
-    /* text-decoration: none; */
 }
 
 .tabs.tabs-transparent .tab a i, .tabs.tabs-transparent li i {
     color: rgb(var(--light));
-    /* text-decoration: underline rgba(127,127,127,.0) 3px; */
-    /* text-decoration: none; */
     transition: .4s;
 }
 
 .tabs.tabs-transparent .tab a:hover i, .tabs.tabs-transparent li:hover i {
-    color: rgb(var(--green));
-    /* text-decoration: underline rgba(127,127,127,.15) 3px; */
-    /* text-decoration: none; */
+    color: rgb(var(--yellow));
 }
 
 #mainnav ul a {

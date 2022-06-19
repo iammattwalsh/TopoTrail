@@ -20,8 +20,11 @@ const app = Vue.createApp({
                 'private':'Private',
                 'public':'Public',
                 'link':'Share with link'
-            }
-
+            },
+            allTrails: [],
+            currentSearchTerm: '',
+            cleanedSearchTerm: '',
+            currentSearchResults: [],
         }
     },
     delimiters: ['[[', ']]'],
@@ -29,6 +32,7 @@ const app = Vue.createApp({
         this.isThisATrail()
         this.getCurrentTrail()
         this.getTrailAssets()
+        this.getAllTrails()
     },
     mounted () {
         const input = document.querySelector('input[name="csrfmiddlewaretoken"]')
@@ -55,20 +59,22 @@ const app = Vue.createApp({
             // console.log(`window ${windowWidth}`)
             // console.log(`aside ${asideWidth}`)
             // this.trailThumbsWidth = windowWidth - asideWidth
-            if (this.trailThumbsWidth == 0) {
-                this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth - 20
-            } else {
-                this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth
+            if (this.isTrail) {
+                if (this.trailThumbsWidth == 0) {
+                    this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth - 20
+                } else {
+                    this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth
+                }
+                this.numTrailThumbs()
             }
-            this.numTrailThumbs()
         },
         numTrailThumbs () {
             this.numThumb = Math.floor(this.trailThumbsWidth / 150)
             this.showThumb = this.trailPhotos.slice(`-${this.numThumb}`,)
         },
         initModals () {
-            var modals = document.querySelectorAll('.modal:not(#modal-add-photos')
-            console.log(modals)
+            var modals = document.querySelectorAll('.modal:not(#modal-add-photos,#modal-search-trails')
+            // console.log(modals)
             modals.forEach(modal => {
                 $(modal).modal();
             })
@@ -79,10 +85,11 @@ const app = Vue.createApp({
                     this.getTrailAssets()
                 }
             })
+            $('#modal-search-trails').modal();
         },
         initMaterializeCharCount () {
             // materialize text entry char counter
-            $('input#id_name, textarea#id_desc, textarea#id_comment, textarea#edittraildesc').characterCounter();
+            $('input#id_name, textarea#id_desc, textarea#id_comment, textarea#edittraildesc, input#search_trails').characterCounter();
         },
         initMaterializeComps () {
             // materialize collabsible
@@ -161,7 +168,7 @@ const app = Vue.createApp({
                 // this.getTrailAssets()
             })
             .catch(error => {
-                console.log(error)
+                // console.log(error)
                 this.newPhotos.forEach(newPhoto => {
                     if (newPhoto.name === file.name) {
                         newPhoto['status'] = 'failed'
@@ -184,11 +191,11 @@ const app = Vue.createApp({
                 })
         },
         addTrailComment () {
-            console.log('start add trail comment')
+            // console.log('start add trail comment')
             let formData = new FormData()
             formData.append('comment',this.newComment)
-            console.log('get form data')
-            console.log(formData)
+            // console.log('get form data')
+            // console.log(formData)
             return axios
                 .post(`/trail/${this.thisTrail}/add_trail_comment`, formData, {
                     headers: {
@@ -219,7 +226,7 @@ const app = Vue.createApp({
         updateEditedShare () {
             select = document.getElementById('trailshareselect')
             this.editedShare = select.value
-            console.log(select.value)
+            // console.log(select.value)
         },
         cancelEditTrail () {
             this.editedDesc = ''
@@ -250,6 +257,25 @@ const app = Vue.createApp({
                         'X-CSRFToken': this.csrf_token,
                     }
                 })
+        },
+        getAllTrails () {
+            axios ({
+                method: 'get',
+                url: `/get_all_trails`
+            }).then(res => {
+                this.allTrails = res.data.trail_list
+                console.log(this.allTrails)
+            })
+        },
+        searchAllTrails () {
+            this.cleanedSearchTerm = this.currentSearchTerm.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()@\s]/g,"")
+            this.currentSearchResults = []
+            this.allTrails.forEach(trail => {
+                if ((trail.name.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()@\s]/g,"").includes(this.cleanedSearchTerm.toLowerCase()) && (this.currentSearchTerm != ''))) {
+                    this.currentSearchResults.push(trail)
+                }
+            })
+            this.currentSearchResults.sort()
         },
         testToggle () {
             this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
