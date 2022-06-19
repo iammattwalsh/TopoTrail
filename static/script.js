@@ -48,7 +48,7 @@ const app = Vue.createApp({
     updated () {
         // console.log(this.trailThumbsWidth)
         this.initModals()
-        this.initMaterializeCharCount()
+        // this.initMaterializeCharCount()
     },
     methods: {
         getDimensions () {
@@ -202,19 +202,48 @@ const app = Vue.createApp({
                 )
         },
         toggleTrailDescEdit () {
-            this.trailDescEdit ? this.trailDescEdit = false : this.trailDescEdit = true
+            if (this.trailDescEdit) {
+                this.trailDescEdit = false
+                this.editedDesc = this.trailAssets.desc
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        this.initMaterializeCharCount()
+                    },100)
+                textArea = document.getElementById('edittraildesc')
+                textArea.style.height = `${textArea.scrollHeight}px`
+                })
+            } else {
+                this.trailDescEdit = true
+                this.editedDesc = ''
+            }
+            // this.trailDescEdit ? this.trailDescEdit = false : this.trailDescEdit = true
         },
-        updateEditedDesc () {
-            this.editedDesc = this.trailAssets.desc
+        updateEditedShare () {
+            select = document.getElementById('trailshareselect')
+            this.editedShare = select.value
+            console.log(select.value)
         },
-
+        cancelEditTrail () {
+            this.editedDesc = ''
+            this.editedShare = ''
+        },
+        selectShareOption () {
+            select = document.getElementById('trailshareselect')
+            M.FormSelect.init(select)
+        },
         editTrail () {
             let formData = new FormData()
             if (this.editedDesc) {
                 formData.append('desc',this.editedDesc)
+                this.trailAssets.desc = this.editedDesc
             }
             if (this.editedShare) {
                 formData.append('share',this.editedShare)
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        this.trailAssets.share = this.editedShare
+                    },100)
+                })
             }
             return axios
                 .post(`/trail/${this.thisTrail}/edit`, formData, {

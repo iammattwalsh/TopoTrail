@@ -107,19 +107,13 @@ def edit_trail(request, slug):
         raise Http404
     else:
         if request.method == 'POST':
-            print('is request.post')
-            print(request.POST.get('desc'))
-            print(request.POST.get('share'))
             if request.POST.get('desc') != None:
-                print('has desc data')
                 trail.desc = request.POST.get('desc')
             if request.POST.get('share') != None:
-                print('has share data')
                 trail.share = request.POST.get('share')
             trail.save()
             return JsonResponse({'success': True})
     return JsonResponse({'success': False})
-            # return redirect('trails:view_trail', slug=trail.slug)
 
 @login_required
 def delete_trail(request, slug):
