@@ -244,13 +244,13 @@ footer {
     color: #000;
 } */
   /* label focus color */
-/* .input-field input[type=text]:focus + label {
-    color: rgb(var(--green));
-} */
+.input-field input[type=text]:focus + label, .input-field .select-wrapper:focus-within + label, .input-field textarea:focus + label {
+    color: rgb(var(--purple)) !important;
+}
   /* label underline focus color */
-.input-field input[type=text]:focus, .input-field div input[type=file]:focus {
-    border-bottom: 1px solid rgb(var(--purple));
-    box-shadow: 0 1px 0 0 #000;
+.input-field input[type=text]:focus, .input-field input[type=file]:focus, textarea.materialize-textarea:focus {
+    border-bottom: 1px solid rgb(var(--purple)) !important;
+    box-shadow: 0 1px 0 0 rgb(var(--purple)) !important;
 }
 /* valid color */
 /* .input-field input[type=text].valid {
@@ -266,3 +266,12 @@ footer {
 /* .input-field .prefix.active {
     color: #000;
 } */
+
+.select-wrapper .dropdown-content li>span {
+    color: rgb(var(--purple));
+    transition: .4s;
+}
+
+.select-wrapper .dropdown-content li>span:hover {
+    color: rgb(var(--green));
+}
