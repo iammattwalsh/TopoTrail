@@ -14,7 +14,7 @@ import os
 SHARE_SETTINGS = (
     ('private','Private'),
     ('public','Public'),
-    ('link','Link'),
+    ('link','Share with link'),
 )
 
 TRAIL_TYPES = {

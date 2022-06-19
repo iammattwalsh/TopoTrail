@@ -5,7 +5,7 @@ from .models import Trail, Photo, Comment
 SHARE_SETTINGS = (
     ('private','Private'),
     ('public','Public'),
-    ('link','Link'),
+    ('link','Share with link'),
 )
 class NewTrailForm(ModelForm):
     class Meta:
@@ -28,10 +28,6 @@ class NewTrailForm(ModelForm):
             'trail_file': FileInput(attrs={
                 'class': '',
             }),
-            # 'share_future': TextInput(attrs={
-            #     'class': '',
-            #     'data-length': 7,
-            # }),
             'share_future': Select(choices=SHARE_SETTINGS),
         }
 
