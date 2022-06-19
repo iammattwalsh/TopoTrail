@@ -275,18 +275,21 @@
                     <a :href="photo.photoHREF" class="modal-trigger">
                         <img :src="photo.thumb" :alt="photo.caption" class="modal-thumb">
                     </a>
-                    <div :id="photo.photoID" class="modal">
-                        <div class="modal-content">
-                            <img :src="photo.url" :alt="photo.caption" class="inside-modal">
-                            <p>[[ photo.caption ]]</p>
-                            <p><em>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</em></p>
-                        </div>
-                    </div>
                 </figure>
             </div>
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+    <!-- Each Photo In All Photos Modal -->
+    <div id="trail-photos" v-for="photo in trailPhotos">
+        <div :id="photo.photoID" class="modal">
+            <div class="modal-content">
+                <img :src="photo.url" :alt="photo.caption" class="inside-modal">
+                <p>[[ photo.caption ]]</p>
+                <p><em>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</em></p>
+            </div>
         </div>
     </div>
     {% if trail.upload_user == request.user %} 

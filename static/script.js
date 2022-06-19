@@ -46,9 +46,7 @@ const app = Vue.createApp({
         window.addEventListener('resize', this.getDimensions)
     },
     updated () {
-        // console.log(this.trailThumbsWidth)
         this.initModals()
-        // this.initMaterializeCharCount()
     },
     methods: {
         getDimensions () {
@@ -70,6 +68,7 @@ const app = Vue.createApp({
         },
         initModals () {
             var modals = document.querySelectorAll('.modal:not(#modal-add-photos')
+            console.log(modals)
             modals.forEach(modal => {
                 $(modal).modal();
             })
@@ -216,7 +215,6 @@ const app = Vue.createApp({
                 this.trailDescEdit = true
                 this.editedDesc = ''
             }
-            // this.trailDescEdit ? this.trailDescEdit = false : this.trailDescEdit = true
         },
         updateEditedShare () {
             select = document.getElementById('trailshareselect')

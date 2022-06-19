@@ -172,9 +172,8 @@ section div:first-child {
 }
 
 #trail-photos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     padding:0px;
     width: 100%;
     min-height: 1px;
@@ -183,6 +182,7 @@ section div:first-child {
 
 #trail-photos figure {
     margin:0px;
+    text-align: center;
 }
 
 /* .material-placeholder {
