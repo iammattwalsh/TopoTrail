@@ -39,7 +39,7 @@ const app = Vue.createApp({
         this.csrf_token = input.value
         this.getUserTrails()
         this.initModals()
-        this.initAddPhotoModal()
+        this.initOtherModals()
         this.initMaterializeComps()
         this.initMaterializeCharCount()
         this.$nextTick(() => {
@@ -73,19 +73,22 @@ const app = Vue.createApp({
             this.showThumb = this.trailPhotos.slice(`-${this.numThumb}`,)
         },
         initModals () {
-            var modals = document.querySelectorAll('.modal:not(#modal-add-photos,#modal-search-trails')
+            var modals = document.querySelectorAll('.modal:not(#modal-add-photos,#modal-search-trails,#modal-signup,#modal-login,#modal-add-trail')
             // console.log(modals)
             modals.forEach(modal => {
                 $(modal).modal();
             })
         },
-        initAddPhotoModal () {
+        initOtherModals () {
             $('#modal-add-photos').modal({
                 onCloseEnd: _ => {
                     this.getTrailAssets()
                 }
             })
             $('#modal-search-trails').modal();
+            $('#modal-signup').modal();
+            $('#modal-login').modal();
+            $('#modal-add-trail').modal();
         },
         initMaterializeCharCount () {
             // materialize text entry char counter
@@ -264,7 +267,7 @@ const app = Vue.createApp({
                 url: `/get_all_trails`
             }).then(res => {
                 this.allTrails = res.data.trail_list
-                console.log(this.allTrails)
+                // console.log(this.allTrails)
             })
         },
         searchAllTrails () {
@@ -272,6 +275,9 @@ const app = Vue.createApp({
             this.currentSearchResults = []
             this.allTrails.forEach(trail => {
                 if ((trail.name.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()@\s]/g,"").includes(this.cleanedSearchTerm.toLowerCase()) && (this.currentSearchTerm != ''))) {
+                    if (!this.isTrail) {
+                        trail.slug = `/trail/${trail.slug}`
+                    }
                     this.currentSearchResults.push(trail)
                 }
             })

@@ -38,7 +38,7 @@
             </ul>
             
             <ul id="nav-mobile" class="sidenav">
-                <li><a href="#">Search</a></li>
+                <li><a class="modal-trigger" href="#modal-search-trails">Search</a></li>
                 {% if request.user.is_authenticated %}
                 <li><a class="modal-trigger" href="#modal-add-trail">Add Trail</a></li>
                 <li><a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a></li>
@@ -88,7 +88,7 @@
                     </label>
                 </div>
                 <div class="file-field input-field col s6">
-                    <div class="btn">
+                    <div class="waves-effect waves-light btn-small deep-purple lighten-1">
                         <span>Select Trail File</span>
                         <input type="file" id="id_trail_file" name="id_trail_file" class="" accept=".geojson,.gpx">
                     </div>
@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="modal-close waves-effect waves-light btn-small ttblue"><i class="material-icons right">send</i>Add Trail</button>
+                <button type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1"><i class="material-icons right">send</i>Add Trail</button>
             </div>
         </form>
     </div>
@@ -131,7 +131,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="modal-close waves-effect waves-light btn-small ttblue"><i class="material-icons right">send</i>Login</button>
+                <button type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1"><i class="material-icons right">send</i>Login</button>
             </div>
         </form>
     </div>
@@ -169,7 +169,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="modal-close waves-effect waves-light btn-small ttblue"><i class="material-icons right">send</i>Sign Up</button>
+                <button type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1"><i class="material-icons right">send</i>Sign Up</button>
             </div>
         </form>
     </div>
@@ -189,7 +189,7 @@
             </ul>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+            <a href="#!" class="modal-close waves-effect waves-light btn-small light-green darken-1">Close</a>
         </div>
     </div>
     <!-- END MODALS -->

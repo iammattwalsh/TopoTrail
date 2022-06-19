@@ -21,7 +21,7 @@
     <nav class="deep-purple lighten-1" id="traileditnav">
         <div class="nav-content">
             <ul class="tabs tabs-transparent">
-                <li class="tab"><a href="#" @click="toggleTrailDescEdit"><i class="material-icons" title="edit description">edit</i>&nbsp; <span v-if="trailThumbsWidth > 500">edit description</span></a></li>
+                <li class="tab"><a @click="toggleTrailDescEdit"><i class="material-icons" title="edit description">edit</i>&nbsp; <span v-if="trailThumbsWidth > 500">edit description</span></a></li>
                 <li class="tab"><a href="#modal-share-settings" @click="selectShareOption" class="modal-trigger"><i class="material-icons" title="edit share settings">share</i>&nbsp; <span v-if="trailThumbsWidth > 500">edit share settings</span></a></li>
                 <li class="tab"><a href="#modal-delete-trail" class="modal-trigger"><i class="material-icons" title="delete trail">delete_forever</i>&nbsp; <span v-if="trailThumbsWidth > 500">delete trail</span></a></li>
             </ul>
@@ -36,14 +36,11 @@
             <form @submit.prevent="editTrail(), toggleTrailDescEdit()" v-else>
                 <div class="input-field">
                     <textarea id="edittraildesc" name="desc" v-model="editedDesc" data-length="1000" class="materialize-textarea"></textarea>
-                    <button v-if="!(trailDescEdit)" class="waves-effect waves-light btn-small" @click.prevent="cancelEditTrail(), toggleTrailDescEdit()">Cancel</button>
-                    <button type="submit" class="waves-effect waves-light btn-small">Save Changes</button>
+                    <button v-if="!(trailDescEdit)" class="waves-effect waves-light btn-small deep-purple lighten-1" @click.prevent="cancelEditTrail(), toggleTrailDescEdit()">Cancel</button>
+                    <button type="submit" class="waves-effect waves-light btn-small light-green darken-1">Save Changes</button>
                 </div>
             </form>
         </div>
-
-        <!-- <a href="#" @click="testToggle">test toggle (swaps mesh and texture to hardcoded version currently)</a> -->
-
         <div id="trail-photos-container">
             <h4>
                 Photos
@@ -87,7 +84,7 @@
                                     Comment
                                 </label>
                             </div>
-                            <button type="submit" class="modal-close waves-effect waves-light btn-small" @click="addTrailComment"><i class="material-icons right">send</i>Add Comment</button>
+                            <button type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1" @click="addTrailComment"><i class="material-icons right">send</i>Add Comment</button>
                         </form>
                     </div>
                 </li>
@@ -104,7 +101,6 @@
             {% endif %}
         </div>
     </div>
-    <a href="#" @click="getAllTrails">asdf</a>
 </section>
 
 {% if trail.mesh and trail.texture_trail %}
@@ -231,7 +227,7 @@
         <div class="modal-content">
             <h4>Upload photos</h4>
             <div class="file-field input-field">
-                <div class="btn">
+                <div class="waves-effect waves-light btn-small deep-purple lighten-1">
                     <span>Choose a file...</span>
                     <input type="file" ref="trailphotofile" @change="selectNewTrailPhotos" accept=".jpg,.jpeg,.png,.gif,.webp" multiple>
                     <input type="hidden" value="{{ request.user }}">
@@ -240,20 +236,12 @@
                     <input class="file-path validate" type="text">
                 </div>
             </div>
-            <!-- <button v-if="newPhotos.length" @click="uploadNewTrailPhotos">Upload</button> -->
             <div v-if="newPhotos.length">
                 <p v-for="newPhoto in newPhotos">
                     [[ newPhoto.name ]] [[ newPhoto.status ]]
                 </p>
             </div>
-            <!-- <form @submit.prevent="addTrailPhotos">
-                <input type="file" @change="uploadFile" multiple>
-                <input type="submit" value="send em">
-            </form> -->
         </div>
-        <!-- <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-        </div> -->
     </div>
     {% endif %}
     <!-- User Trails Modal -->
@@ -308,11 +296,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                    <button @click.prevent="cancelEditTrail" class="modal-close waves-effect waves-green btn-flat">
+                    <button @click.prevent="cancelEditTrail" class="modal-close waves-effect waves-light btn-small deep-purple lighten-1">
                         Cancel
                     </button>
-                <button @click="updateEditedShare" type="submit" class="modal-close waves-effect waves-green btn-flat">
-                    Save
+                <button @click="updateEditedShare" type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1">
+                    Save Changes
                 </button>
             </div>
         </form>
@@ -331,12 +319,12 @@
         <div class="modal-footer">
             <form action="{% url 'trails:delete_trail' trail.slug %}" method="post">
                 <a href="#!">
-                    <button class="modal-close waves-effect waves-green btn-flat">
+                    <button @submit.prevent="" class="modal-close waves-effect waves-light btn-small deep-purple lighten-1">
                         Cancel
                     </button>
                 </a>
                 {% csrf_token %}
-                <button type="submit" class="waves-effect waves-green btn-flat">Delete</button>
+                <button type="submit" class="waves-effect waves-light btn-small red accent-4">Delete</button>
             </form>
             <!-- <button type="submit" class="waves-effect waves-green btn-flat" formaction="{% url 'trails:delete_trail' trail.slug %}">Delete</button> -->
         </div>
