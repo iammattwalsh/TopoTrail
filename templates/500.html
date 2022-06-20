@@ -1,7 +1,21 @@
-{% extends 'errorbase.html' %}
+{% extends 'base.html' %}
 
 {% block title_post %}: 500 error!{% endblock %}
 
 {% block content %}
-500
+
+<div class="light-green darken-1 big-text-container">
+    <p class="big-text"><span class="big-text">NopoTrail</span></p>
+</div>
+
+<div class="deep-purple lighten-1 sub-big-text-container-heading">
+    <h1>500</h1>
+</div>
+
+<div class="sub-big-text-container-text">
+    <p>
+        Our servers broke! Wait a moment and refresh, <a href="{% url 'trails:home' %}">go home</a>, or <a class="modal-trigger" href="#modal-search-trails">search</a> our trails!
+    </p>
+</div>
+
 {% endblock %}

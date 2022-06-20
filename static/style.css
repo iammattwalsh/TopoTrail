@@ -244,11 +244,11 @@ footer {
     color: #000;
 } */
   /* label focus color */
-.input-field input[type=text]:focus + label, .input-field .select-wrapper:focus-within + label, .input-field textarea:focus + label {
+.input-field input[type=text]:focus + label, .input-field .select-wrapper:focus-within + label, .input-field textarea:focus + label, .input-field input[type=password]:focus + label, .input-field input[type=email]:focus + label {
     color: rgb(var(--purple)) !important;
 }
   /* label underline focus color */
-.input-field input[type=text]:focus, .input-field input[type=file]:focus, textarea.materialize-textarea:focus, input#search-trails:focus {
+.input-field input[type=text]:focus, .input-field input[type=file]:focus, textarea.materialize-textarea:focus, input#search-trails:focus, .input-field input[type=password]:focus, .input-field input[type=email]:focus {
     border-bottom: 1px solid rgb(var(--purple)) !important;
     box-shadow: 0 1px 0 0 rgb(var(--purple)) !important;
 }
@@ -274,4 +274,71 @@ footer {
 
 .select-wrapper .dropdown-content li>span:hover {
     color: rgb(var(--green));
+}
+
+p.big-text {
+    font-family: 'Rokkitt', serif;
+    font-size: 15vw;
+    font-weight: bold;
+    /* text-align: center; */
+    text-decoration: double underline 1.5vw rgb(var(--yellow));
+    transition: .4s;
+    color: rgb(var(--dark))
+}
+
+p span.big-text {
+    text-decoration: underline 1.5vw rgb(var(--purple));
+    transition: .4s;
+    color: rgb(var(--dark))
+}
+
+p.big-text:hover {
+    text-decoration: double underline 1.5vw rgb(var(--purple));
+    color: rgb(var(--light))
+}
+
+p:hover span.big-text {
+    text-decoration: underline 1.5vw rgb(var(--yellow));
+    color: rgb(var(--light))
+}
+
+.big-text-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-big-text-container-heading {
+    padding: 10px;
+    color: rgb(var(--light));
+    text-align: center;
+}
+
+.sub-big-text-container-text {
+    padding: 10px;
+    color: rgb(var(--dark));
+    text-align: center;
+}
+
+.sub-big-text-container-heading-2 {
+    padding: 10px;
+    color: rgb(var(--dark));
+    text-align: center;
+}
+
+.sub-big-text-container-text-2 {
+    padding: 10px;
+    color: rgb(var(--dark));
+    text-align: center;
+}
+
+.flex-wrapper {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+footer {
+    margin-top: auto;
 }

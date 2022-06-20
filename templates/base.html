@@ -20,7 +20,7 @@
 </head>
 <!-- <body id="app" class="blue-grey darken-4 white-text">
     <nav class="blue-grey darken-4" role="navigation"> -->
-<body id="app" class="white blue-grey-text text-darken-4">
+<body id="app" class="white blue-grey-text text-darken-4 flex-wrapper">
     {% csrf_token %}
     <nav class="white" role="navigation" id="mainnav">
         <div class="nav-wrapper container">
@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1"><i class="material-icons right">send</i>Add Trail</button>
+                <button type="submit" class="waves-effect waves-light btn-small light-green darken-1"><i class="material-icons right">send</i>Add Trail</button>
             </div>
         </form>
     </div>
@@ -179,8 +179,11 @@
         <div class="modal-content">
             <h4>Search Trails</h4>
             <p>Search all trails owned by you or publicly shared.</p>
-            <div>
-                <input id="search-trails" type="text" v-model="currentSearchTerm" @keyup="searchAllTrails" data-length="100">
+            <div class="input-field">
+                <input name ="search" id="search-trails" type="text" v-model="currentSearchTerm" @keyup="searchAllTrails" data-length="100">
+                <label for="search">
+                    <i class="material-icons left">search</i>
+                </label>
             </div>
             <ul>
                 <li v-for="trail in currentSearchResults">

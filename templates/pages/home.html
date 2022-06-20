@@ -1,10 +1,52 @@
 {% extends 'base.html' %}
-{% block title_pre %}
-Welcome to 
-{% endblock %}
-{% block title_post %}
-!
-{% endblock %}
+{% block title_pre %}Welcome to {% endblock %}
+{% block title_post %}!{% endblock %}
 {% block content %}
-<p>Hello woooooorld</p>
+
+<div class="light-green darken-1 big-text-container">
+    <p class="big-text"><span class="big-text">TopoTrail</span></p>
+</div>
+
+<div class="deep-purple lighten-1 sub-big-text-container-heading">
+    <h1>What is TopoTrail?</h1>
+</div>
+
+<div class="sub-big-text-container-text">
+    <p>
+        TopoTrail is the easiest way to see and plan outdoor adventures overlayed on real-world terrain.
+    </p>
+    <p>
+        At TopoTrail you can search from trails shared by others, or add your own by uploading GPS trail files in common formats (currently supports .GPX and .GEOJSON). Just type a name and description, upload a file, and we'll do all the hard work!
+    </p>
+    <p>
+        Going on a hike and want to know if there are hazardous drop-offs along the trail? We'll show you!
+    </p>
+    <p>
+        Planning a bike ride and want to see how tired your legs will be at the end? You'll see your future pain in 3D!
+    </p>
+    <p>
+        Leading a climb and want to visualize the ascent for your group? There's never been a better way to see it!
+    </p>
+</div>
+
+<div class="amber sub-big-text-container-heading-2">
+    <h1>Take TopoTrail for a spin!</h1>
+</div>
+
+<div class="sub-big-text-container-text-2">
+    <p>
+        Search from existing trails below{% if not request.user.is_authenticated %}, and <a class="modal-trigger" href="#modal-login">login</a> or <a class="modal-trigger" href="#modal-signup">sign up</a> if you like what you see{% endif %}!
+    </p>
+    <div class="input-field">
+        <input name ="search" id="search-trails" type="text" v-model="currentSearchTerm" @keyup="searchAllTrails" data-length="100">
+        <label for="search">
+            <i class="material-icons left">search</i>
+        </label>
+    </div>
+    <ul>
+        <li v-for="trail in currentSearchResults">
+            <a :href="trail.slug">[[ trail.name ]]</a> - <em>added [[ new Date(trail.timestamp).toLocaleDateString() ]] by [[ trail.upload_user ]]</em>
+        </li>
+    </ul>
+</div>
 {% endblock %}

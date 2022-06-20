@@ -1,7 +1,21 @@
-{% extends 'errorbase.html' %}
+{% extends 'base.html' %}
 
 {% block title_post %}: 400 error!{% endblock %}
 
 {% block content %}
-400
+
+<div class="light-green darken-1 big-text-container">
+    <p class="big-text"><span class="big-text">NopoTrail</span></p>
+</div>
+
+<div class="deep-purple lighten-1 sub-big-text-container-heading">
+    <h1>400</h1>
+</div>
+
+<div class="sub-big-text-container-text">
+    <p>
+        There was an issue with your request! <a href="{% url 'trails:home' %}">Go home</a> or <a class="modal-trigger" href="#modal-search-trails">search</a> our trails!
+    </p>
+</div>
+
 {% endblock %}
