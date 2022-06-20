@@ -248,7 +248,7 @@ footer {
     color: rgb(var(--purple)) !important;
 }
   /* label underline focus color */
-.input-field input[type=text]:focus, .input-field input[type=file]:focus, textarea.materialize-textarea:focus {
+.input-field input[type=text]:focus, .input-field input[type=file]:focus, textarea.materialize-textarea:focus, input#search-trails:focus {
     border-bottom: 1px solid rgb(var(--purple)) !important;
     box-shadow: 0 1px 0 0 rgb(var(--purple)) !important;
 }
