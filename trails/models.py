@@ -1,4 +1,3 @@
-from tkinter import CASCADE
 from django.db import models
 from django.utils.text import slugify
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
