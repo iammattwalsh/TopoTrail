@@ -153,3 +153,6 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 AUTH_USER_MODEL = 'users.CustomUser'
 
 LOGIN_URL = '/user/login'
+
+import django_on_heroku
+django_on_heroku.settings(locals())

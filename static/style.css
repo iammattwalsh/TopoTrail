@@ -345,6 +345,12 @@ p:hover span.big-text {
 i.fa-solid {
     font-size: 6rem;
     color: rgb(var(--green));
+    margin-top: 40px;
+    transition: .4s;
+}
+
+i.fa-solid:hover {
+    color: rgb(var(--purple));
 }
 
 .flex-wrapper {

@@ -103,6 +103,8 @@ const app = Vue.createApp({
             $('.sidenav').sidenav();
             // materialize form selectbox
             $('select').formSelect();
+            // materialize tooltips
+            $('.tooltipped').tooltip();
         },
         isThisATrail () {
             // use URL to determine if current page is a trail
