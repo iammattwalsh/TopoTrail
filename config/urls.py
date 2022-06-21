@@ -18,6 +18,8 @@ from django.urls import path, include, re_path
 from django.views.static import serve
 from django.conf import settings
 
+# from . import views
+
 handler404 = 'config.views.page_not_found_view'
 handler500 = 'config.views.error_view'
 handler403 = 'config.views.permission_denied_view'
@@ -28,4 +30,5 @@ urlpatterns = [
     path('user/', include('users.urls')),
     path('', include('trails.urls')),
     re_path(r'^uploads/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
+    # path('errortest', views.errortest)
 ]

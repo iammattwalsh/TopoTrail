@@ -91,12 +91,12 @@
                 <div class="file-field input-field col s6">
                     <div class="waves-effect waves-light btn-small deep-purple lighten-1">
                         <span>Select Trail File</span>
-                        <input type="file" id="id_trail_file" name="id_trail_file" class="" accept=".geojson,.gpx">
+                        <!-- <input type="file" id="id_trail_file" name="id_trail_file" class="" accept=".geojson,.gpx"> -->
+                        {{ new_trail_form.trail_file }}
                     </div>
-                    <div class="file-path-wrapper">
+                    <!-- <div class="file-path-wrapper">
                         <input class="file-path validate" type="text">
-                    </div>
-                    {{ new_trail_form.trail_file }}
+                    </div> -->
                 </div>
                 <div class="input-field col s6">
                     {{ new_trail_form.share_future }}

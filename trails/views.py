@@ -244,7 +244,7 @@ def add_trail_comment(request,slug):
     return JsonResponse({'success': False})
 
 def get_all_trails(request):
-    trail_objects = get_list_or_404(Trail, share='public')
+    trail_objects = Trail.objects.filter(share='public')
     if request.user.is_authenticated:
         user_trail_objects = Trail.objects.filter(upload_user=request.user)
     trail_list = []

@@ -11,3 +11,6 @@ def permission_denied_view(request, exception):
 
 def bad_request_view(request, exception):
     return render(request, '400.html', status=400)
+
+# def errortest(request):
+#     return render(request, '404.html')

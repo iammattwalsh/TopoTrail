@@ -13,5 +13,5 @@ urlpatterns = [
     path('trail/<slug:slug>/get_user_trails', views.get_user_trails, name = 'get_user_trails'),
     path('trail/<slug:slug>/add_trail_photos', views.add_trail_photos, name = 'add_trail_photos'),
     path('trail/<slug:slug>/add_trail_comment', views.add_trail_comment, name = 'add_trail_comment'),
-    path('get_all_trails', views.get_all_trails, name = 'get_all_trails')
+    path('get_all_trails', views.get_all_trails, name = 'get_all_trails'),
 ]

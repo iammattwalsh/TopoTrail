@@ -84,6 +84,19 @@ class Trail(models.Model):
                 self.slug = slugify(self.name)
         super(Trail, self).save(*args, **kwargs)
 
+    def delete(self, using=None, keep_parents=False):
+        files = [
+            self.trail_file,
+            self.heightmap,
+            self.mesh,
+            self.texture_sat,
+            self.texture_trail,
+        ]
+        for file in files:
+            if file != '':
+                file.delete()
+        super().delete()
+
     def __str__(self):
         return self.name
 
@@ -143,6 +156,19 @@ class Photo(models.Model):
             force_update = True
 
         super(Photo, self).save(force_update=force_update)
+
+    def delete(self, using=None, keep_parents=False):
+        files = [
+            self.photo,
+            self.thumb,
+        ]
+        for file in files:
+            if file != '':
+                file.delete()
+        super().delete()
+
+    def __str__(self):
+        return self.name
 
 class Comment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
