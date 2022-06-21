@@ -318,6 +318,11 @@ p:hover span.big-text {
     padding: 10px;
     color: rgb(var(--dark));
     text-align: center;
+    font-size: 1.5rem;
+}
+
+.sub-big-text-container-text p {
+    margin-block-end: 20px;
 }
 
 .sub-big-text-container-heading-2 {
@@ -330,6 +335,16 @@ p:hover span.big-text {
     padding: 10px;
     color: rgb(var(--dark));
     text-align: center;
+    font-size: 1.5rem;
+}
+
+.sub-big-text-container-text-2 .input-field input[type=text]:focus, .sub-big-text-container-text-2 .input-field input[type=text] {
+    font-size: 2rem !important;
+}
+
+i.fa-solid {
+    font-size: 6rem;
+    color: rgb(var(--green));
 }
 
 .flex-wrapper {
