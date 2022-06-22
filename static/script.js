@@ -54,16 +54,11 @@ const app = Vue.createApp({
     },
     methods: {
         getDimensions () {
-            // windowWidth = window.innerWidth
-            // asideWidth = document.getElementById('aside').clientWidth
-            // console.log(`window ${windowWidth}`)
-            // console.log(`aside ${asideWidth}`)
-            // this.trailThumbsWidth = windowWidth - asideWidth
             if (this.isTrail) {
                 if (this.trailThumbsWidth == 0) {
-                    this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth - 20
+                    this.trailThumbsWidth = document.getElementById('trail-thumbs').clientWidth - 20
                 } else {
-                    this.trailThumbsWidth = document.getElementById('trail-photos').clientWidth
+                    this.trailThumbsWidth = document.getElementById('trail-thumbs').clientWidth
                 }
                 this.numTrailThumbs()
             }
@@ -71,6 +66,7 @@ const app = Vue.createApp({
         numTrailThumbs () {
             this.numThumb = Math.floor(this.trailThumbsWidth / 150)
             this.showThumb = this.trailPhotos.slice(`-${this.numThumb}`,)
+            this.showThumb.reverse()
         },
         initModals () {
             var modals = document.querySelectorAll('.modal:not(#modal-add-photos,#modal-search-trails,#modal-signup,#modal-login,#modal-add-trail')

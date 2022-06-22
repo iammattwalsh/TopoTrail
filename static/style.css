@@ -4,7 +4,6 @@ font-family: 'Rokkitt', serif; */
 
 body {
     font-family: 'Nunito', sans-serif;
-    /* width: 100vw; */
     --green: 124,179,66; /* #7CB342 */
     --purple: 126,87,194; /* #7E57C2 */
     --yellow: 255,193,7; /* #FFC107 */
@@ -15,10 +14,6 @@ body {
 p {
     margin-top: 5px;
     margin-bottom: 5px;
-}
-
-main {
-    /* width: 100vw; */
 }
 
 main a {
@@ -39,14 +34,6 @@ section {
 }
 
 #maincontainer {
-    padding: 10px;
-}
-
-section aside {
-    /* background-color: rgb(var(--dark));
-    color: white; */
-    border-left: 9px double rgb(var(--green));
-    border-bottom: 9px double rgb(var(--green));
     padding: 10px;
 }
 
@@ -147,14 +134,8 @@ nav a:hover {
     color: rgb(var(--yellow));
 }
 
-#mainnav ul a {
-    /* outline:3px double rgba(0,0,0,0); */
-    /* outline-offset:-3px; */
-}
-
 nav ul a:hover {
     background-color: rgba(127,127,127,.15);
-    /* outline:3px double rgba(0,0,0,1); */
 }
 
 section div:first-child {
@@ -180,6 +161,20 @@ section div:first-child {
     text-align: center;
 }
 
+#trail-thumbs {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding:0px;
+    width: 100%;
+    min-height: 1px;
+    box-sizing: border-box;
+}
+
+#trail-thumbs figure {
+    margin: 0px;
+}
+
 /* .material-placeholder {
     padding: 0px;
 } */
@@ -196,11 +191,11 @@ section div:first-child {
     max-height: 80vh;
 }
 
-#trail-photos .modal {
+#trail-photos .modal, #trail-thumbs .modal {
     max-height:80%
 }
 
-#trail-photos .modal-content {
+#trail-photos .modal-content, #trail-thumbs .modal-content {
     padding:0px;
 }
 
@@ -239,33 +234,14 @@ footer {
     text-align: center;
 }
 
-  /* label color */
-/* .input-field label {
-    color: #000;
-} */
-  /* label focus color */
 .input-field input[type=text]:focus + label, .input-field .select-wrapper:focus-within + label, .input-field textarea:focus + label, .input-field input[type=password]:focus + label, .input-field input[type=email]:focus + label {
     color: rgb(var(--purple)) !important;
 }
-  /* label underline focus color */
+
 .input-field input[type=text]:focus, .input-field input[type=file]:focus, textarea.materialize-textarea:focus, input#search-trails:focus, .input-field input[type=password]:focus, .input-field input[type=email]:focus {
     border-bottom: 1px solid rgb(var(--purple)) !important;
     box-shadow: 0 1px 0 0 rgb(var(--purple)) !important;
 }
-/* valid color */
-/* .input-field input[type=text].valid {
-    border-bottom: 1px solid #000;
-    box-shadow: 0 1px 0 0 #000;
-} */
-  /* invalid color */
-/* .input-field input[type=text].invalid {
-    border-bottom: 1px solid #000;
-    box-shadow: 0 1px 0 0 #000;
-}  */
-  /* icon prefix focus color */
-/* .input-field .prefix.active {
-    color: #000;
-} */
 
 .select-wrapper .dropdown-content li>span {
     color: rgb(var(--purple));
@@ -280,7 +256,6 @@ p.big-text {
     font-family: 'Rokkitt', serif;
     font-size: 15vw;
     font-weight: bold;
-    /* text-align: center; */
     text-decoration: double underline 1.5vw rgb(var(--yellow));
     transition: .4s;
     color: rgb(var(--dark))
@@ -352,6 +327,10 @@ i.fa-solid {
 
 i.fa-solid:hover {
     color: rgb(var(--purple));
+}
+
+.trail-comment {
+    padding: 10px 0px;
 }
 
 .flex-wrapper {

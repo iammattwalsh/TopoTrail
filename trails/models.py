@@ -1,13 +1,12 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 
 from users.models import CustomUser
 
 from PIL import Image, ImageOps
-from io import StringIO
+
 import os
 
 SHARE_SETTINGS = (
@@ -127,24 +126,16 @@ class Photo(models.Model):
         if not self.photo:
             pass
 
+        if not os.path.isdir(f'{settings.MEDIA_ROOT}/{self.parent_trail.slug}/photos/'):
+            os.mkdir(f'{settings.MEDIA_ROOT}/{self.parent_trail.slug}/photos/')
+
         THUMB_SIZE = (150,150)
-
-        DJANGO_TYPE = self.photo.file.content_type
-
-        if DJANGO_TYPE == 'image/jpeg':
-            PIL_TYPE = 'jpeg'
-        elif DJANGO_TYPE == 'image/png':
-            PIL_TYPE = 'png'
-        elif DJANGO_TYPE == 'image/webp':
-            PIL_TYPE = 'webp'
-        elif DJANGO_TYPE == 'image/gif':
-            PIL_TYPE = 'gif'
     
         original_photo = Image.open(self.photo)
 
         thumb = ImageOps.fit(original_photo, THUMB_SIZE, Image.ANTIALIAS, centering=(0.5,0.5))
 
-        thumb.save(f'{settings.MEDIA_ROOT}/{self.parent_trail.slug}/photos/thumb-{self.photo.name}', PIL_TYPE)
+        thumb.save(f'{settings.MEDIA_ROOT}/{self.parent_trail.slug}/photos/thumb-{self.photo.name}')
 
         self.thumb.name = f'{self.parent_trail.slug}/photos/thumb-{self.photo.name}'
     

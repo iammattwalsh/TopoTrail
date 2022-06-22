@@ -17,6 +17,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+import cloudinary.api
+
 import numpy as np
 from PIL import Image, ImageDraw
 Image.MAX_IMAGE_PIXELS = None
@@ -76,7 +78,6 @@ async def process_upload(request, slug):
 @login_required
 def new_trail(request):
     if request.method == 'POST':
-        print(request.POST)
         name = request.POST.get('name')
         name = name.replace('#','').replace('/','')
         desc = request.POST.get('desc')
@@ -681,10 +682,12 @@ def draw_trail(coords,coord_mid,north,south,east,west,trail,width,height):
 
     coord_height = north - south
     coord_width = east - west
-    height_var = height/coord_height*10
-    width_var = width/coord_width*10
 
-    image_size_var = 10
+    image_size_var = 50
+
+    height_var = height/coord_height*image_size_var
+    width_var = width/coord_width*image_size_var
+
     texture_trail = Image.new('RGBA', (width*image_size_var,height*image_size_var))
     draw = ImageDraw.Draw(texture_trail)
 
@@ -693,7 +696,7 @@ def draw_trail(coords,coord_mid,north,south,east,west,trail,width,height):
         if i < (len(coords) - 1):
             this_coord = (((coord[1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coord[0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
             next_coord = (((coords[i+1][1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coords[i+1][0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
-            draw.line([this_coord,next_coord],'Red',1)
+            draw.line([this_coord,next_coord],(213,0,0,255),2)
     texture_trail.save(f'{path}/uploads/{trail.slug}/texture_trail.png')
     trail.texture_trail.name = f'{trail.slug}/texture_trail.png'
 

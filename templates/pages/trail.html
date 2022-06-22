@@ -45,8 +45,8 @@
             <h4>
                 Photos
             </h4>
-            <div id="trail-photos" ref="trailPhotos" v-if="trailPhotos.length">
-                <figure v-for="photo in showThumb.reverse()" :key="photo.id">
+            <div id="trail-thumbs" ref="trailPhotos" v-if="trailPhotos.length">
+                <figure v-for="photo in showThumb" :key="photo.id">
                     <a :href="photo.photoHREF" class="modal-trigger">
                         <img :src="photo.thumb" :alt="photo.caption" class="modal-thumb">
                     </a>
@@ -64,7 +64,7 @@
                 </figure>
             </div>
             <span v-if="trailPhotos.length"><span v-if="numThumb <= trailPhotos.length">[[ numThumb ]] newest</span><span v-else>[[ trailPhotos.length ]]</span> of <a href="#modal-all-photos" class="modal-trigger" title="view all photos">[[ trailPhotos.length ]] <i class="material-icons">photo_library</i></a>{% if trail.upload_user == request.user %} <a href="#modal-add-photos" class="modal-trigger" title="add new photos"><i class="material-icons">add_a_photo</i></a>{% endif %}</span>
-            <div id="trail-photos" v-else>
+            <div id="trail-thumbs" v-else>
                 <span>There are no photos currently. {% if trail.upload_user == request.user %}<a href="#modal-add-photos" class="modal-trigger" title="add new photos"><i class="material-icons">add_a_photo</i> Add photos now.</a>{% endif %}</span>
             </div>
         </div>
@@ -84,15 +84,20 @@
                                     Comment
                                 </label>
                             </div>
-                            <button type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1" @click="addTrailComment"><i class="material-icons right">send</i>Add Comment</button>
+                            <button type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1" @click="addTrailComment(), getTrailAssets()"><i class="material-icons right">send</i>Add Comment</button>
                         </form>
                     </div>
                 </li>
                 <li class="active">
                     <div class="collapsible-header"><i class="material-icons">chat</i>Comments</div>
                     <div class="collapsible-body">
-                        <div v-for="comment in trailComments" v-if="trailComments.length">
-                            [[ comment.user ]] - [[ new Date(comment.timestamp).toLocaleDateString() ]] at [[ new Date(comment.timestamp).toLocaleTimeString() ]]<br>[[ comment.comment ]]
+                        <div v-for="comment in trailComments" v-if="trailComments.length" class="trail-comment">
+                            <div>
+                                <em>[[ comment.user ]] - [[ new Date(comment.timestamp).toLocaleDateString() ]] at [[ new Date(comment.timestamp).toLocaleTimeString() ]]</em>
+                            </div>
+                            <div>
+                                [[ comment.comment ]]
+                            </div>
                         </div>
                         <span v-else>There are no comments yet.</span>
                     </div>
