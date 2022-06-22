@@ -46,7 +46,7 @@
                 Photos
             </h4>
             <div id="trail-photos" ref="trailPhotos" v-if="trailPhotos.length">
-                <figure v-for="photo in showThumb" :key="photo.id">
+                <figure v-for="photo in showThumb.reverse()" :key="photo.id">
                     <a :href="photo.photoHREF" class="modal-trigger">
                         <img :src="photo.thumb" :alt="photo.caption" class="modal-thumb">
                     </a>
@@ -63,7 +63,7 @@
                     </div>
                 </figure>
             </div>
-            <span v-if="trailPhotos.length">[[ numThumb ]] newest of <a href="#modal-all-photos" class="modal-trigger" title="view all photos">[[ trailPhotos.length ]] <i class="material-icons">photo_library</i></a>{% if trail.upload_user == request.user %} <a href="#modal-add-photos" class="modal-trigger" title="add new photos"><i class="material-icons">add_a_photo</i></a>{% endif %}</span>
+            <span v-if="trailPhotos.length"><span v-if="numThumb <= trailPhotos.length">[[ numThumb ]] newest</span><span v-else>[[ trailPhotos.length ]]</span> of <a href="#modal-all-photos" class="modal-trigger" title="view all photos">[[ trailPhotos.length ]] <i class="material-icons">photo_library</i></a>{% if trail.upload_user == request.user %} <a href="#modal-add-photos" class="modal-trigger" title="add new photos"><i class="material-icons">add_a_photo</i></a>{% endif %}</span>
             <div id="trail-photos" v-else>
                 <span>There are no photos currently. {% if trail.upload_user == request.user %}<a href="#modal-add-photos" class="modal-trigger" title="add new photos"><i class="material-icons">add_a_photo</i> Add photos now.</a>{% endif %}</span>
             </div>

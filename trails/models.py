@@ -116,8 +116,8 @@ class Photo(models.Model):
     parent_trail = models.ForeignKey(Trail, on_delete=models.CASCADE, null=True, blank=True)
     parent_waypoint = models.ForeignKey(Waypoint, on_delete=models.CASCADE, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    photo = models.ImageField(upload_to=photo_location)
-    thumb = models.ImageField(upload_to=thumb_location, null=True, blank=True)
+    photo = models.ImageField(max_length=512, upload_to=photo_location)
+    thumb = models.ImageField(max_length=512, upload_to=thumb_location, null=True, blank=True)
     caption = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
@@ -167,9 +167,6 @@ class Photo(models.Model):
                 file.delete()
         super().delete()
 
-    def __str__(self):
-        return self.name
-
 class Comment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     parent_trail = models.ForeignKey(Trail, on_delete=models.CASCADE)
@@ -184,7 +181,7 @@ class Rating(models.Model):
 
 class TrailType(models.Model):
     type = models.CharField(max_length=50, choices=TRAIL_TYPES)
-    trails = models.ManyToManyField(Trail, null=True, blank=True)
+    trails = models.ManyToManyField(Trail)
     slug = models.SlugField(unique=True)
     # allow selection of multiple types per trail
     # does this need date added? (for future - to filter existing trails before new types are added)

@@ -180,7 +180,7 @@ const app = Vue.createApp({
                     }
                 })
             })
-            // console.log('uploadNewTrailPhoto start')
+            // console.log('uploadNewTrailPhoto end')
         },
         addNewTrailPhotos (file) {
             // console.log('addNewTrailPhotos start')

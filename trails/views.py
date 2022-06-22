@@ -76,6 +76,7 @@ async def process_upload(request, slug):
 @login_required
 def new_trail(request):
     if request.method == 'POST':
+        print(request.POST)
         name = request.POST.get('name')
         name = name.replace('#','').replace('/','')
         desc = request.POST.get('desc')
@@ -220,7 +221,6 @@ def add_trail_photos(request,slug):
     if request.user == trail_object.upload_user:
         if request.FILES:
             form = AddTrailPhoto(request.POST, request.FILES)
-
             if form.is_valid():
                 form.instance.user = request.user
                 form.instance.parent_trail = trail_object
