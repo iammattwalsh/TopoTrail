@@ -51,3 +51,14 @@ class AddTrailComment(ModelForm):
                 'data-length': 500,
             })
         }
+
+class EditPhotoCaption(ModelForm):
+    class Meta:
+        model = Photo
+        fields = ['caption',]
+        widgets = {
+            'comment': Textarea(attrs={
+                'class':'',
+                'data-length': 100,
+            })
+        }

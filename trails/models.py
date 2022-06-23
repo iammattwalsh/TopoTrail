@@ -126,6 +126,10 @@ class Photo(models.Model):
         if not self.photo:
             pass
 
+        print(self.id)
+        if not self._state.adding:
+            pass
+
         if not os.path.isdir(f'{settings.MEDIA_ROOT}/{self.parent_trail.slug}/photos/'):
             os.mkdir(f'{settings.MEDIA_ROOT}/{self.parent_trail.slug}/photos/')
 
@@ -140,23 +144,15 @@ class Photo(models.Model):
         self.thumb.name = f'{self.parent_trail.slug}/photos/thumb-{self.photo.name}'
     
     def save(self, *args, **kwargs):
-        self.create_thumb()
+        # self.create_thumb()
         force_update = False
 
         if self.id:
             force_update = True
+        else:
+            self.create_thumb()
 
         super(Photo, self).save(force_update=force_update)
-
-    def delete(self, using=None, keep_parents=False):
-        files = [
-            self.photo,
-            self.thumb,
-        ]
-        for file in files:
-            if file != '':
-                file.delete()
-        super().delete()
 
 class Comment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

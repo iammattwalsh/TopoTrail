@@ -25,6 +25,7 @@ const app = Vue.createApp({
             currentSearchTerm: '',
             cleanedSearchTerm: '',
             currentSearchResults: [],
+            request: {}
         }
     },
     delimiters: ['[[', ']]'],
@@ -69,7 +70,7 @@ const app = Vue.createApp({
             this.showThumb.reverse()
         },
         initModals () {
-            var modals = document.querySelectorAll('.modal:not(#modal-add-photos,#modal-search-trails,#modal-signup,#modal-login,#modal-add-trail')
+            var modals = document.querySelectorAll('.modal:not(#modal-add-photos,#modal-search-trails,#modal-signup,#modal-login,#modal-add-trail,#modal-all-photos')
             // console.log(modals)
             modals.forEach(modal => {
                 $(modal).modal();
@@ -85,6 +86,7 @@ const app = Vue.createApp({
             $('#modal-signup').modal();
             $('#modal-login').modal();
             $('#modal-add-trail').modal();
+            $('#modal-all-photos').modal();
         },
         initMaterializeCharCount () {
             // materialize text entry char counter
@@ -125,14 +127,19 @@ const app = Vue.createApp({
                     url: `/trail/${this.thisTrail}/get_trail_assets`
                 }).then(res => {
                     this.trailPhotos = res.data.photos
-                    this.trailPhotos.forEach((eachPhoto, i) => {
+                    this.trailPhotos.forEach(eachPhoto => {
                         eachPhoto.photoHREF = `#photo${eachPhoto.id}`
                         eachPhoto.photoID = `photo${eachPhoto.id}`
                     })
                     this.trailAssets = res.data.trail
                     this.trailComments = res.data.comment
+                    this.trailComments.forEach(eachComment => {
+                        eachComment.commentHREF = `#comment${eachComment.id}`
+                        eachComment.commendID = `comment${eachComment.id}`
+                    })
                     this.trailComments.reverse()
                     this.numTrailThumbs()
+                    this.request = res.data.request
                 })
             }
         },
@@ -282,6 +289,49 @@ const app = Vue.createApp({
             })
             this.currentSearchResults.sort()
         },
+        deleteTrailComment(id) {
+            axios ({
+                method: 'post',
+                url: `/trail/${this.thisTrail}/delete_trail_comment/${id}`,
+                headers: {
+                    // 'Content-Type': 'multipart/form-data',
+                    'X-CSRFToken': this.csrf_token,
+                }
+            }).then(res =>
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        this.getTrailAssets()
+                    },300)
+                })
+                )
+        },
+
+
+        // getTrailAssets () {
+        //     if (this.isTrail) {
+        //         axios ({
+        //             method: 'get',
+        //             url: `/trail/${this.thisTrail}/get_trail_assets`
+        //         }).then(res => {
+        //             this.trailPhotos = res.data.photos
+        //             this.trailPhotos.forEach(eachPhoto => {
+        //                 eachPhoto.photoHREF = `#photo${eachPhoto.id}`
+        //                 eachPhoto.photoID = `photo${eachPhoto.id}`
+        //             })
+        //             this.trailAssets = res.data.trail
+        //             this.trailComments = res.data.comment
+        //             this.trailComments.forEach(eachComment => {
+        //                 eachComment.commentHREF = `#comment${eachComment.id}`
+        //                 eachComment.commendID = `comment${eachComment.id}`
+        //             })
+        //             this.trailComments.reverse()
+        //             this.numTrailThumbs()
+        //         })
+        //     }
+        // },
+
+
+        // experimental method
         testToggle () {
             this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
             this.trailAssets.mesh = '/uploads/mt-hood/mesh.obj'

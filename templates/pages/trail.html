@@ -57,8 +57,7 @@
                             <p><em>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</em></p>
                         </div>
                         <!-- <div class="modal-footer">
-                            [[ photo.id ]]
-                            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+                            <a href="#!" class="modal-close waves-effect waves-light btn-small light-green darken-1">Close</a>
                         </div> -->
                     </div>
                 </figure>
@@ -75,7 +74,9 @@
             <ul class="collapsible">
                 {% if request.user.is_authenticated %}
                 <li>
-                    <div class="collapsible-header"><i class="material-icons">create</i>Add comment</div>
+                    <div class="collapsible-header">
+                        <i class="material-icons">create</i>Add comment
+                    </div>
                     <div class="collapsible-body">
                         <form method="post" enctype="multipart/form-data"></form>
                             <div class="input-field">
@@ -90,11 +91,13 @@
                 </li>
                 {% endif %}
                 <li class="active">
-                    <div class="collapsible-header"><i class="material-icons">chat</i>Comments</div>
+                    <div class="collapsible-header">
+                        <i class="material-icons">chat</i>Comments
+                    </div>
                     <div class="collapsible-body">
                         <div v-for="comment in trailComments" v-if="trailComments.length" class="trail-comment">
                             <div>
-                                <em>[[ comment.user ]] - [[ new Date(comment.timestamp).toLocaleDateString() ]] at [[ new Date(comment.timestamp).toLocaleTimeString() ]]</em> <a v-if="request.user == comment.user" :href="comment.commentHREF" class="modal-trigger larger-icon"><i class="material-icons">delete_forever</i>delete</a>
+                                <em>[[ comment.user ]] - [[ new Date(comment.timestamp).toLocaleDateString() ]] at [[ new Date(comment.timestamp).toLocaleTimeString() ]]</em> <a v-if="request.user == comment.user" :href="comment.commentHREF" class="modal-trigger larger-icon"><i class="material-icons">delete_forever</i></a>
                             </div>
                             <div>
                                 [[ comment.comment ]]
@@ -271,6 +274,8 @@
                     <a :href="photo.photoHREF" class="modal-trigger">
                         <img :src="photo.thumb" :alt="photo.caption" class="modal-thumb">
                     </a>
+                    <a :href="'#edit-photo'+photo.id+'-modal'" @click="initEditCaption(photo.id)" class="modal-trigger"><i class="material-icons larger-icon" title="edit caption">edit</i></a>
+                    <a :href="'#delete-photo'+photo.id+'-modal'" class="modal-trigger"><i class="material-icons larger-icon" title="delete photo">delete_forever</i></a>
                 </figure>
             </div>
         </div>
@@ -287,6 +292,49 @@
                 <p><em>Uploaded by [[ photo.user ]] on [[ new Date(photo.timestamp).toLocaleDateString() ]] at [[ new Date(photo.timestamp).toLocaleTimeString() ]].</em></p>
             </div>
         </div>
+        <!-- Delete Photo Modal -->
+        {% if trail.upload_user == request.user %}
+        <div :id="'delete-photo'+photo.id+'-modal'" class="modal">
+            <div class="modal-content">
+                <h4>Are you sure?</h4>
+                <p>
+                    Deleting photos cannot be undone. Press delete to confirm, or cancel if you change your mind.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-close waves-effect waves-light btn-small deep-purple lighten-1">Cancel</button>
+                <button @click.prevent="deleteTrailPhoto(photo.id)" class="modal-close waves-effect waves-light btn-small red accent-4">Delete</button>
+            </div>
+        </div>
+        <!-- Edit Photo Caption Modal -->
+        <div :id="'edit-photo'+photo.id+'-modal'" class="modal">
+            <form method="post" enctype="multipart/form-data">
+                <div class="input-field">
+                    <img :src="photo.url" :alt="photo.caption" class="inside-modal">
+                    <textarea :value="editCaption" name="id_caption" id="id_caption" class="materialize-textarea"></textarea>
+                    <label for="id_caption">
+                        Caption
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button @submit.prevent="" class="modal-close waves-effect waves-light btn-small deep-purple lighten-1">Cancel</button>
+                    <button @click.prevent="updateEditCaption(); editTrailPhoto(photo.id)" class="modal-close waves-effect waves-light btn-small light-green darken-1">Save</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- 
+                        <form method="post" enctype="multipart/form-data"></form>
+                            <div class="input-field">
+                                <textarea v-model="newComment" id="id_comment" class="materialize-textarea" data-length="500"></textarea>
+                                <label for="id_comment">
+                                    Comment
+                                </label>
+                            </div>
+                            <button type="submit" class="modal-close waves-effect waves-light btn-small light-green darken-1" @click="addTrailComment(), getTrailAssets()"><i class="material-icons right">send</i>Add Comment</button>
+                        </form>
+        -->
     </div>
     {% if trail.upload_user == request.user %} 
     <!-- Share Settings Modal -->
@@ -317,10 +365,10 @@
         <div class="modal-content">
             <h4>Are you sure?</h4>
             <p>
-                Deleting trails cannot be undone. Press confirm to delete, or cancel if you change your mind.
+                Deleting trails cannot be undone. Press delete to confirm, or cancel if you change your mind.
             </p>
             <p>
-                You can set the trail to private instead of you need more time to decide.
+                You can set the trail to private instead if you need more time to decide.
             </p>
         </div>
         <div class="modal-footer">
@@ -335,13 +383,14 @@
             </form>
         </div>
     </div>
+    {% endif %}
     <!-- Delete Comment Modal -->
     <div v-for="comment in trailComments">
-        <div :id="comment.commendID" class="modal bottom-sheet">
+        <div :id="comment.commentID" class="modal bottom-sheet">
             <div class="modal-content">
                 <h4>Are you sure?</h4>
                 <p>
-                    Deleting comments cannot be undone. Press confirm to delete, or cancel if you change your mind.
+                    Deleting comments cannot be undone. Press delete to confirm, or cancel if you change your mind.
                 </p>
             </div>
             <div class="modal-footer">
@@ -350,5 +399,4 @@
             </div>
         </div>
     </div>
-    {% endif %}
 {% endblock %}

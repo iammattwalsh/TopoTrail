@@ -25,7 +25,8 @@ const app = Vue.createApp({
             currentSearchTerm: '',
             cleanedSearchTerm: '',
             currentSearchResults: [],
-            request: {}
+            request: {},
+            editCaption: '',
         }
     },
     delimiters: ['[[', ']]'],
@@ -70,7 +71,7 @@ const app = Vue.createApp({
             this.showThumb.reverse()
         },
         initModals () {
-            var modals = document.querySelectorAll('.modal:not(#modal-add-photos,#modal-search-trails,#modal-signup,#modal-login,#modal-add-trail')
+            var modals = document.querySelectorAll('.modal:not(#modal-add-photos,#modal-search-trails,#modal-signup,#modal-login,#modal-add-trail,#modal-all-photos')
             // console.log(modals)
             modals.forEach(modal => {
                 $(modal).modal();
@@ -86,10 +87,11 @@ const app = Vue.createApp({
             $('#modal-signup').modal();
             $('#modal-login').modal();
             $('#modal-add-trail').modal();
+            $('#modal-all-photos').modal();
         },
         initMaterializeCharCount () {
             // materialize text entry char counter
-            $('input#id_name, textarea#id_desc, textarea#id_comment, textarea#edittraildesc, input#search_trails').characterCounter();
+            $('input#id_name, textarea#id_desc, textarea#id_comment, textarea#edittraildesc, input#search_trails, textarea#id_caption').characterCounter();
         },
         initMaterializeComps () {
             // materialize collabsible
@@ -134,7 +136,7 @@ const app = Vue.createApp({
                     this.trailComments = res.data.comment
                     this.trailComments.forEach(eachComment => {
                         eachComment.commentHREF = `#comment${eachComment.id}`
-                        eachComment.commendID = `comment${eachComment.id}`
+                        eachComment.commentID = `comment${eachComment.id}`
                     })
                     this.trailComments.reverse()
                     this.numTrailThumbs()
@@ -304,30 +306,51 @@ const app = Vue.createApp({
                 })
                 )
         },
+        deleteTrailPhoto(id) {
+            axios ({
+                method: 'post',
+                url: `/trail/${this.thisTrail}/delete_trail_photo/${id}`,
+                headers: {
+                    // 'Content-Type': 'multipart/form-data',
+                    'X-CSRFToken': this.csrf_token,
+                }
+            }).then(res =>
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        this.getTrailAssets()
+                    },300)
+                })
+                )
+        },
+        initEditCaption(id) {
+            this.trailPhotos.forEach(photo => {
+                if (photo.id == id) {
+                    this.editCaption = photo.caption
+                }
+            })
+        },
+        updateEditCaption() {
+            select = document.getElementById('id_caption')
+            this.editCaption = select.value
+        },
+        editTrailPhoto(id) {
+            let formData = new FormData()
+            formData.append('caption',this.editCaption)
+            return axios
+                .post(`/trail/${this.thisTrail}/edit_trail_photo/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken': this.csrf_token,
+                    }
+                }).then(res =>
+                    this.$nextTick(() => {
+                        setTimeout(() => {
+                            this.getTrailAssets()
+                        },300)
+                    })
+                    )
+        },
 
-
-        // getTrailAssets () {
-        //     if (this.isTrail) {
-        //         axios ({
-        //             method: 'get',
-        //             url: `/trail/${this.thisTrail}/get_trail_assets`
-        //         }).then(res => {
-        //             this.trailPhotos = res.data.photos
-        //             this.trailPhotos.forEach(eachPhoto => {
-        //                 eachPhoto.photoHREF = `#photo${eachPhoto.id}`
-        //                 eachPhoto.photoID = `photo${eachPhoto.id}`
-        //             })
-        //             this.trailAssets = res.data.trail
-        //             this.trailComments = res.data.comment
-        //             this.trailComments.forEach(eachComment => {
-        //                 eachComment.commentHREF = `#comment${eachComment.id}`
-        //                 eachComment.commendID = `comment${eachComment.id}`
-        //             })
-        //             this.trailComments.reverse()
-        //             this.numTrailThumbs()
-        //         })
-        //     }
-        // },
 
 
         // experimental method

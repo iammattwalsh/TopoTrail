@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
 from .models import Trail, Waypoint, Photo, Comment, Rating, TrailType
-from .forms import NewTrailForm, AddTrailPhoto, AddTrailComment
+from .forms import NewTrailForm, AddTrailPhoto, AddTrailComment, EditPhotoCaption
 
 import asyncio
 import json
@@ -230,11 +230,60 @@ def add_trail_photos(request,slug):
     return JsonResponse({'success': False})
 
 @login_required
+def delete_trail_photo(request,slug,id):
+    photo_object = get_object_or_404(Photo,id=id)
+    # authenticate user
+    if photo_object.user != request.user:
+        raise Http404
+    else:
+        if request.method == 'POST':
+            print('is post')
+            photo_object.delete()
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+@login_required
+def edit_trail_photo(request,slug,id):
+    # trail_object = get_object_or_404(Trail, slug=slug)
+    photo_object = get_object_or_404(Photo,id=id)
+    print('got photo')####################
+    # authenticate user
+    if photo_object.user != request.user:
+        raise Http404
+    else:
+        print('is user')####################
+        # print(request.post)####################
+        if request.method == 'POST':
+            print('is post')####################
+            print(request.POST.get('caption'))
+            photo_object.caption = request.POST.get('caption')
+            photo_object.save()
+
+
+        # if request.method == 'POST':
+        #     if request.POST.get('desc') != None:
+        #         trail.desc = request.POST.get('desc')
+        #     if request.POST.get('share') != None:
+        #         trail.share = request.POST.get('share')
+        #     trail.save()
+            return JsonResponse({'success': True})
+
+
+            # form = EditPhotoCaption(request.POST)
+
+            # if form.is_valid():
+            #     print('is valid')####################
+            #     form.instance.photo = photo_object
+            #     form.instance.user = request.user
+            #     form.instance.parent_trail = trail_object
+            #     form.save()
+            #     return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+@login_required
 def add_trail_comment(request,slug):
     trail_object = get_object_or_404(Trail, slug=slug)
     if request.method == 'POST':
-        # data = json.loads(request.body)
-        # comment = data.get('comment')
         form = AddTrailComment(request.POST)
 
         if form.is_valid():
@@ -246,19 +295,13 @@ def add_trail_comment(request,slug):
 
 @login_required
 def delete_trail_comment(request,slug,id):
-    # trail_object = get_object_or_404(Trail, slug=slug)
-    # comment_object = get_object_or_404(Comment,parent_trail=trail_object,id=id)
     # get comment
     comment_object = get_object_or_404(Comment,id=id)
-    print('got comment')####################
     # authenticate user
     if comment_object.user != request.user:
         raise Http404
     else:
-        print('is user')####################
-        print(request.method)####################
         if request.method == 'POST':
-            print('is post')
             comment_object.delete()
             return JsonResponse({'success': True})
     return JsonResponse({'success': False})
@@ -715,7 +758,7 @@ def draw_trail(coords,coord_mid,north,south,east,west,trail,width,height):
         if i < (len(coords) - 1):
             this_coord = (((coord[1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coord[0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
             next_coord = (((coords[i+1][1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coords[i+1][0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
-            draw.line([this_coord,next_coord],(213,0,0,255),3)
+            draw.line([this_coord,next_coord],(213,0,0,255),5)
     texture_trail.save(f'{path}/uploads/{trail.slug}/texture_trail.png')
     trail.texture_trail.name = f'{trail.slug}/texture_trail.png'
 
