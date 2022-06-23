@@ -72,8 +72,8 @@
             <h4>
                 Comments
             </h4>
-            {% if request.user.is_authenticated %}
             <ul class="collapsible">
+                {% if request.user.is_authenticated %}
                 <li>
                     <div class="collapsible-header"><i class="material-icons">create</i>Add comment</div>
                     <div class="collapsible-body">
@@ -88,12 +88,13 @@
                         </form>
                     </div>
                 </li>
+                {% endif %}
                 <li class="active">
                     <div class="collapsible-header"><i class="material-icons">chat</i>Comments</div>
                     <div class="collapsible-body">
                         <div v-for="comment in trailComments" v-if="trailComments.length" class="trail-comment">
                             <div>
-                                <em>[[ comment.user ]] - [[ new Date(comment.timestamp).toLocaleDateString() ]] at [[ new Date(comment.timestamp).toLocaleTimeString() ]]</em>
+                                <em>[[ comment.user ]] - [[ new Date(comment.timestamp).toLocaleDateString() ]] at [[ new Date(comment.timestamp).toLocaleTimeString() ]]</em> <a v-if="request.user == comment.user" :href="comment.commentHREF" class="modal-trigger larger-icon"><i class="material-icons">delete_forever</i>delete</a>
                             </div>
                             <div>
                                 [[ comment.comment ]]
@@ -103,7 +104,6 @@
                     </div>
                 </li>
             </ul>
-            {% endif %}
         </div>
     </div>
 </section>
@@ -333,7 +333,21 @@
                 {% csrf_token %}
                 <button type="submit" class="waves-effect waves-light btn-small red accent-4">Delete</button>
             </form>
-            <!-- <button type="submit" class="waves-effect waves-green btn-flat" formaction="{% url 'trails:delete_trail' trail.slug %}">Delete</button> -->
+        </div>
+    </div>
+    <!-- Delete Comment Modal -->
+    <div v-for="comment in trailComments">
+        <div :id="comment.commendID" class="modal bottom-sheet">
+            <div class="modal-content">
+                <h4>Are you sure?</h4>
+                <p>
+                    Deleting comments cannot be undone. Press confirm to delete, or cancel if you change your mind.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-close waves-effect waves-light btn-small deep-purple lighten-1">Cancel</button>
+                <button @click.prevent="deleteTrailComment(comment.id)" class="modal-close waves-effect waves-light btn-small red accent-4">Delete</button>
+            </div>
         </div>
     </div>
     {% endif %}

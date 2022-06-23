@@ -333,6 +333,10 @@ i.fa-solid:hover {
     padding: 10px 0px;
 }
 
+.larger-icon {
+    font-size: 16px;
+}
+
 .flex-wrapper {
     display: flex;
     min-height: 100vh;

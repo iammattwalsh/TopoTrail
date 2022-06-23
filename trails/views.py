@@ -17,8 +17,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-import cloudinary.api
-
 import numpy as np
 from PIL import Image, ImageDraw
 Image.MAX_IMAGE_PIXELS = None
@@ -196,8 +194,10 @@ def get_trail_assets(request,slug):
             'user': comment_object.user.username,
             'timestamp': comment_object.timestamp,
             'comment': comment_object.comment,
+            'id': comment_object.id,
         })
-    return JsonResponse(data={'photos':photos,'trail':trail, 'comment':comments,})
+    request_user = {'user': request.user.username}
+    return JsonResponse(data={'photos':photos,'trail':trail, 'comment':comments, 'request':request_user,})
 
 def get_user_trails (request,slug):
     trail_object = get_object_or_404(Trail, slug=slug)
@@ -241,6 +241,25 @@ def add_trail_comment(request,slug):
             form.instance.user = request.user
             form.instance.parent_trail = trail_object
             form.save()
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+@login_required
+def delete_trail_comment(request,slug,id):
+    # trail_object = get_object_or_404(Trail, slug=slug)
+    # comment_object = get_object_or_404(Comment,parent_trail=trail_object,id=id)
+    # get comment
+    comment_object = get_object_or_404(Comment,id=id)
+    print('got comment')####################
+    # authenticate user
+    if comment_object.user != request.user:
+        raise Http404
+    else:
+        print('is user')####################
+        print(request.method)####################
+        if request.method == 'POST':
+            print('is post')
+            comment_object.delete()
             return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
@@ -696,7 +715,7 @@ def draw_trail(coords,coord_mid,north,south,east,west,trail,width,height):
         if i < (len(coords) - 1):
             this_coord = (((coord[1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coord[0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
             next_coord = (((coords[i+1][1] - coord_mid[1]) * width_var) + (width * image_size_var / 2),((coords[i+1][0] - coord_mid[0]) * height_var) + (height * image_size_var / 2))
-            draw.line([this_coord,next_coord],(213,0,0,255),2)
+            draw.line([this_coord,next_coord],(213,0,0,255),3)
     texture_trail.save(f'{path}/uploads/{trail.slug}/texture_trail.png')
     trail.texture_trail.name = f'{trail.slug}/texture_trail.png'
 
