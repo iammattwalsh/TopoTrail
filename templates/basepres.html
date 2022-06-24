@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize@1.1.0/modern-normalize.min.css"> -->
+	<script src="https://unpkg.com/vue@3"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
+    <script src="https://kit.fontawesome.com/5e147aea5d.js" crossorigin="anonymous"></script>
+    <script src="{% static 'init.js' %}" defer></script>
+    <script src="{% static 'script.js' %}" defer></script>
+    <title>{% block title_pre %}{% endblock %}{% block title %}TopoTrail{% endblock %}{% block title_post %}{% endblock %}</title>
+</head>
+<!-- <body id="app" class="blue-grey darken-4 white-text">
+    <nav class="blue-grey darken-4" role="navigation"> -->
+<body id="app" class="white blue-grey-text text-darken-4 flex-wrapper">
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

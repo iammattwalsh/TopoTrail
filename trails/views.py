@@ -768,3 +768,19 @@ def draw_trail(coords,coord_mid,north,south,east,west,trail,width,height):
 
 async def get_satellite():
     ...
+
+#########################
+# ABOUT VIEWS FUNCTIONS #
+#########################
+
+def about_1(request):
+    return render(request, 'about/about-1.html')
+
+def about_2(request):
+    return render(request, 'about/about-2.html')
+
+def about_3(request):
+    return render(request, 'about/about-3.html')
+
+def about_4(request):
+    return render(request, 'about/about-4.html')

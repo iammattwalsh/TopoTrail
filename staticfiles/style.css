@@ -16,14 +16,14 @@ p {
     margin-bottom: 5px;
 }
 
-main a {
+main a, #trail-photos a, footer a {
     color: rgba(var(--green), 1);
     transition: .4s;
     text-decoration: underline 3px;
     text-decoration-color: rgba(var(--green), 0);
 }
 
-main a:hover {
+main a:hover, #trail-photos a:hover, footer a:hover {
     color: rgb(var(--purple));
     text-decoration: underline 3px;
     text-decoration-color: rgba(var(--purple), 1);
@@ -346,4 +346,33 @@ i.fa-solid:hover {
 
 footer {
     margin-top: auto;
+}
+
+/* ABOUT PAGES EXTRA CSS */
+
+.aboutholder {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+.aboutdark {
+    color: rgb(var(--dark))
+}
+
+.aboutlight {
+    color: rgb(var(--light))
+}
+
+.aboutwidth {
+    max-width: 1000px;
+}
+
+.about {
+    border: 0px;
+    background-color: inherit;
+    box-shadow: none;
+    -webkit-box-shadow: none;
 }

@@ -1,0 +1,67 @@
+{% extends 'basepres.html' %}
+
+{% block content %}
+<div class="light-green darken-1 aboutholder aboutdark flex-wrapper">
+    <div class="aboutwidth">
+        <div class="big-text-container">
+            <p class="big-text"><span class="big-text">TopoTrail</span></p>
+        </div>
+        
+        <div class="sub-big-text-container-heading aboutdark">
+            <h1>What's TopoTrail's future?</h1>
+        </div>
+        <ul class="collapsible about">
+            <li>
+                <div class="collapsible-header about"><h5>A break from this code!</h5></div>
+                <div class="collapsible-body about"><span>I'm a sleepy boi.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Satellite imagery as a texture, with the trail overlaid on that</h5></div>
+                <div class="collapsible-body about"><span>Affordable sourcing of this data in a simple format doesn't exist at necessary resolutions. USGS has this data available, but due to delivery format and necessary manipulation the timeframe did not allow for its use.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Higher resolution meshes</h5></div>
+                <div class="collapsible-body about"><span>This is already built, but is too inefficient to expose to end users.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Potentially switching mesh format</h5></div>
+                <div class="collapsible-body about"><span>OBJ is simple to write, but GLTF may have advantages - including efficiency advantages that would make higher resolution meshes viable.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Mesh "normal" smoothing</h5></div>
+                <div class="collapsible-body about"><span>"Normals" tell a 3D renderer how to render reflections. The generation process is more complicated than it initially seems.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>More robust information about each trail</h5></div>
+                <div class="collapsible-body about"><span>Some things like trail length, elevation gain, etc. can be programatically generated. Other information may be best sourced through API integration with existing resources.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Espansion of user system</h5></div>
+                <div class="collapsible-body about"><span>Features like email confirmation upon registration, captchas, passowrd recovery, bios, etc.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Allow tying of information to specific waypoints.</h5></div>
+                <div class="collapsible-body about"><span>Each coordinate already exists as a "waypoint" object, with hooks to add photos and notes to these points. Building out supporting features to use these hooks will take time, but will provide a more in-depth experience.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Presentation view</h5></div>
+                <div class="collapsible-body about"><span>Full screen view with camera flying from waypoint to waypoint, designed for showing a trail to a group or seeing it yourself in a more interactive way.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Rework status monitors</h5></div>
+                <div class="collapsible-body about"><span>Send notifications to user once certain steps are complete, retrigger failed generation steps based on error information.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Dark/light mode</h5></div>
+                <div class="collapsible-body about"><span>This is straightforward, but time-consuming and ultimately cut for other features.</span></div>
+            </li>
+        </ul>
+    </div>
+    <footer><a href="about-2" class="aboutlight">PREV</a> - <a href="about-4" class="aboutlight">NEXT</a></footer>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.collapsible').collapsible();
+    });
+</script>
+{% endblock %}

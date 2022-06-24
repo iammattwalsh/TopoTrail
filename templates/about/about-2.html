@@ -1,0 +1,67 @@
+{% extends 'basepres.html' %}
+
+{% block content %}
+<div class="light-green darken-1 aboutholder aboutdark flex-wrapper">
+    <div class="aboutwidth">
+        <div class="big-text-container">
+            <p class="big-text"><span class="big-text">TopoTrail</span></p>
+        </div>
+        
+        <div class="sub-big-text-container-heading aboutdark">
+            <h1>How does it work?</h1>
+        </div>
+        <ul class="collapsible about">
+            <li>
+                <div class="collapsible-header about"><h5>User uploads GPX/GEOJSON file</h5></div>
+                <div class="collapsible-body about"><span>GPX and GEOJSON files each contain lists of GPS coordinates wrapped in XML and JSON, respectively.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>App parses this file into a series of GPS coordinates</h5></div>
+                <div class="collapsible-body about"><span>The parsing process saves each coordinate and also records the center point and N/S/E/W extremes.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>App starts generating trail assets asychronously</h5></div>
+                <div class="collapsible-body about"><span>While most dayhike-length trails take less than a minute to generate, longer trails could take several minutes to hours. The user should not have to wait for this to complete.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Edge coordinates are used to make an API call for elevation data</h5></div>
+                <div class="collapsible-body about"><span>Via proxy, a USGS 16-bit GEOTIFF file (16-bit greyscale image with lighter pixels representing higher elevations) is returned.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Heightmap anomalies and artifacts are cleaned</h5></div>
+                <div class="collapsible-body about"><span>Many GEOTIFF files contain anomalies that appear as fully white pixels (from atmospheric or surface reflectivity), so I wrote an algorithm to detect anomalies and clean them up.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Heightmap is unpacked</h5></div>
+                <div class="collapsible-body about"><span>Each pixel is recorded as X/Y/Z coordinates based on position in the image and color value.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Pixel data is converted to mesh vertices and polygons</h5></div>
+                <div class="collapsible-body about"><span>Vertices are recorded from pixel data, then polygons (with texture mapping) are connected to each vertex.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Vertice and polygons are saved as a mesh</h5></div>
+                <div class="collapsible-body about"><span>This information is written in OBJ format (common 3D model format).</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Texture overlay is drawn</h5></div>
+                <div class="collapsible-body about"><span>GPS coordinates from uploaded trail file are drawn onto a PNG texture file to overlay on mesh.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>After completion, files are saved</h5></div>
+                <div class="collapsible-body about"><span>Files are attached to their parent trail and status monitors are updated to reflect their completion.</span></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Mesh is displayed on trail page</h5></div>
+                <div class="collapsible-body about"><span>Status monitors will not allow rendering of this element until generation is complete.</span></div>
+            </li>
+        </ul>
+    </div>
+    <footer><a href="about-1" class="aboutlight">PREV</a> - <a href="about-3" class="aboutlight">NEXT</a></footer>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.collapsible').collapsible();
+    });
+</script>
+{% endblock %}

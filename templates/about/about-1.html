@@ -1,0 +1,32 @@
+{% extends 'basepres.html' %}
+
+{% block content %}
+<div class="light-green darken-1 aboutholder aboutdark flex-wrapper">
+    <div class="aboutwidth">
+        <div class="big-text-container">
+            <p class="big-text"><span class="big-text">TopoTrail</span></p>
+        </div>
+        
+        <div class="sub-big-text-container-heading aboutdark">
+            <h1>What is TopoTrail?</h1>
+        </div>
+        <ul class="collapsible about">
+            <li>
+                <div class="collapsible-header about"><h5>TopoTrail allows users to view hiking, climbing, and cycling "trails" overlayed on 3D terrain</h5></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Users can upload their own trail files and TopoTrail will generate this content for them</h5></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Trails can have photos and comments added to them, where additional trail details can be augmented</h5></div>
+            </li>
+        </ul>
+    </div>
+    <footer><a href="about-2" class="aboutlight">NEXT</a></footer>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.collapsible').collapsible();
+    });
+</script>
+{% endblock %}

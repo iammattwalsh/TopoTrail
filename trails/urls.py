@@ -17,4 +17,9 @@ urlpatterns = [
     path('trail/<slug:slug>/add_trail_comment', views.add_trail_comment, name = 'add_trail_comment'),
     path('trail/<slug:slug>/delete_trail_comment/<int:id>', views.delete_trail_comment, name = 'delete_trail_comment'),
     path('get_all_trails', views.get_all_trails, name = 'get_all_trails'),
+    # below are for presentation
+    path('about-1', views.about_1),
+    path('about-2', views.about_2),
+    path('about-3', views.about_3),
+    path('about-4', views.about_4),
 ]

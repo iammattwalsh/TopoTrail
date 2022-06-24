@@ -1,0 +1,45 @@
+{% extends 'basepres.html' %}
+
+{% block content %}
+<div class="light-green darken-1 aboutholder aboutdark flex-wrapper">
+    <div class="aboutwidth">
+        <div class="big-text-container">
+            <p class="big-text"><span class="big-text">TopoTrail</span></p>
+        </div>
+        
+        <div class="sub-big-text-container-heading aboutdark">
+            <h1>What did I use?</h1>
+        </div>
+        <ul class="collapsible about">
+            <li>
+                <div class="collapsible-header about"><h5>Django</h5></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Vue</h5></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>ThreeJS</h5></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>MaterializeCSS</h5></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Asyncio</h5></div>
+            </li>
+            <li>
+                <div class="collapsible-header about"><h5>Geojson and GPX parsers</h5></div>
+            </li>
+            <li class="active">
+                <div class="collapsible-header about"><h5>A handful of python libraries</h5></div>
+                <div class="collapsible-body about"><span>PIL, numpy, requests, shutil, etc.</span></div>
+            </li>
+        </ul>
+    </div>
+    <footer><a href="about-3" class="aboutlight">PREV</a></footer>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.collapsible').collapsible();
+    });
+</script>
+{% endblock %}
