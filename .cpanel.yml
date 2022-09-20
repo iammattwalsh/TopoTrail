@@ -1,0 +1,5 @@
+---
+deployment:
+      tasks:
+        - export DEPLOYPATH=/home/shelvzly/public_html/topotrail.com
+        - /bin/cp -r /home/shelvzly/repositories/TopoTrail/* $DEPLOYPATH
