@@ -376,3 +376,7 @@ footer {
     box-shadow: none;
     -webkit-box-shadow: none;
 }
+
+.active .collapsible-header.about, .active .collapsible-body.about {
+    color: white;
+}

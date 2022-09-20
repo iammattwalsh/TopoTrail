@@ -282,9 +282,9 @@ const app = Vue.createApp({
             this.currentSearchResults = []
             this.allTrails.forEach(trail => {
                 if ((trail.name.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()@\s]/g,"").includes(this.cleanedSearchTerm.toLowerCase()) && (this.currentSearchTerm != ''))) {
-                    if (!this.isTrail) {
-                        trail.slug = `/trail/${trail.slug}`
-                    }
+                    // if (!this.isTrail) {
+                    //     trail.slug = `/trail/${trail.slug}`
+                    // }
                     this.currentSearchResults.push(trail)
                 }
             })
@@ -355,8 +355,8 @@ const app = Vue.createApp({
 
         // experimental method
         testToggle () {
-            this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
-            this.trailAssets.mesh = '/uploads/mt-hood/mesh.obj'
+            // this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
+            this.trailAssets.mesh = '/uploads/mt-hood-southside-summit-ascent/mesh-high.obj'
         },
     },
 }).mount('#app')

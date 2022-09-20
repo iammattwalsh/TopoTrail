@@ -1,0 +1,382 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Rokkitt:wght@300&display=swap');
+/* font-family: 'Nunito', sans-serif;
+font-family: 'Rokkitt', serif; */
+
+body {
+    font-family: 'Nunito', sans-serif;
+    --green: 124,179,66; /* #7CB342 */
+    --purple: 126,87,194; /* #7E57C2 */
+    --yellow: 255,193,7; /* #FFC107 */
+    --light: 255,255,255; /* #FFFFFF */
+    --dark: 38,50,56; /* #263238 */
+}
+
+p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+main a, #trail-photos a, footer a {
+    color: rgba(var(--green), 1);
+    transition: .4s;
+    text-decoration: underline 3px;
+    text-decoration-color: rgba(var(--green), 0);
+}
+
+main a:hover, #trail-photos a:hover, footer a:hover {
+    color: rgb(var(--purple));
+    text-decoration: underline 3px;
+    text-decoration-color: rgba(var(--purple), 1);
+}
+
+section {
+    display: flex;
+}
+
+#maincontainer {
+    padding: 10px;
+}
+
+header {
+    background-color: rgb(var(--green));
+    padding-top: 10px;
+    text-align: center;
+}
+
+header a {
+    color: rgba(var(--purple), 1);
+    text-decoration-color: rgba(var(--purple), 0);
+}
+
+header a:hover {
+    color: rgba(var(--yellow),1);
+    text-decoration-color: rgba(var(--yellow), 1);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Rokkitt', serif;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#mainnav .brand-logo {
+    font-family: 'Rokkitt', serif;
+    font-weight: bold;
+    transition: .4s;
+    color: rgb(var(--dark));
+    text-decoration: double underline rgba(var(--dark),0) 3px;
+}
+
+#mainnav .brand-logo:hover {
+    color: rgb(var(--yellow));
+    text-decoration: double underline rgba(var(--yellow),1) 3px;
+}
+
+#mainnav {
+    border-bottom: 3px double rgb(var(--dark));
+}
+
+#mainnav ul a, nav a {
+    /* color: var(--purple); */
+    color: rgb(var(--dark));
+    transition: .4s;
+    text-decoration: underline rgba(var(--dark),0) 3px;
+}
+
+#mainnav ul a:hover {
+    color: rgb(var(--green));
+    text-decoration: underline rgba(var(--green),1) 3px;
+}
+
+nav a:hover {
+    color: rgb(var(--green));
+    text-decoration-color: transparent;
+}
+
+#traileditnav a {
+    height:48px;
+    line-height: 48px;
+    display: inline-flex;
+}
+
+.tabs.tabs-transparent .tab a, .tabs.tabs-transparent li {
+    background-color: rgba(127,127,127,0);
+    height: 48px;
+}
+
+.tabs.tabs-transparent .tab a span, .tabs.tabs-transparent li span {
+    color: rgb(var(--light));
+    text-decoration: underline rgba(var(--light),0) 3px;
+    transition: .4s;
+}
+
+.tabs.tabs-transparent .tab a:hover, .tabs.tabs-transparent li:hover {
+    background-color: rgba(127,127,127,.15);
+}
+
+.tabs.tabs-transparent .tab a:hover span, .tabs.tabs-transparent li:hover span {
+    color: rgb(var(--yellow));
+    text-decoration: underline rgba(var(--yellow),1) 3px;
+}
+
+#traileditnav i, #traileditnav i.material-icons {
+    height:48px;
+    line-height: 48px;
+}
+
+.tabs.tabs-transparent .tab a i, .tabs.tabs-transparent li i {
+    color: rgb(var(--light));
+    transition: .4s;
+}
+
+.tabs.tabs-transparent .tab a:hover i, .tabs.tabs-transparent li:hover i {
+    color: rgb(var(--yellow));
+}
+
+nav ul a:hover {
+    background-color: rgba(127,127,127,.15);
+}
+
+section div:first-child {
+    width: 100%;
+}
+
+#trail-photos-container, #trail-comment-container {
+    padding: 0px;
+    width: 100%;
+}
+
+#trail-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    padding:0px;
+    width: 100%;
+    min-height: 1px;
+    box-sizing: border-box;
+}
+
+#trail-photos figure {
+    margin:0px;
+    text-align: center;
+}
+
+#trail-thumbs {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding:0px;
+    width: 100%;
+    min-height: 1px;
+    box-sizing: border-box;
+}
+
+#trail-thumbs figure {
+    margin: 0px;
+}
+
+/* .material-placeholder {
+    padding: 0px;
+} */
+
+.modal-thumb {
+    object-fit: cover;
+    width:150px;
+    height:150px;
+}
+
+.inside-modal {
+    object-fit: contain;
+    width: 100%;
+    max-height: 80vh;
+}
+
+#trail-photos .modal, #trail-thumbs .modal {
+    max-height:80%
+}
+
+#trail-photos .modal-content, #trail-thumbs .modal-content {
+    padding:0px;
+}
+
+/* #trail-photos figure img.active {
+    object-fit: contain;
+} */
+
+/* #materialbox-overlay {
+    background-color: rgb(var(--dark));
+} */
+
+.material-icons {
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.hidden {
+    display: none;
+}
+
+.collapsible-header i {
+    line-height: 1;
+}
+
+#traileditnav {
+    height: 48px;
+    display: flex;
+    justify-content: center;
+}
+
+canvas {
+    max-width: 100%;
+}
+
+footer {
+    text-align: center;
+}
+
+.input-field input[type=text]:focus + label, .input-field .select-wrapper:focus-within + label, .input-field textarea:focus + label, .input-field input[type=password]:focus + label, .input-field input[type=email]:focus + label {
+    color: rgb(var(--purple)) !important;
+}
+
+.input-field input[type=text]:focus, .input-field input[type=file]:focus, textarea.materialize-textarea:focus, input#search-trails:focus, .input-field input[type=password]:focus, .input-field input[type=email]:focus {
+    border-bottom: 1px solid rgb(var(--purple)) !important;
+    box-shadow: 0 1px 0 0 rgb(var(--purple)) !important;
+}
+
+.select-wrapper .dropdown-content li>span {
+    color: rgb(var(--purple));
+    transition: .4s;
+}
+
+.select-wrapper .dropdown-content li>span:hover {
+    color: rgb(var(--green));
+}
+
+p.big-text {
+    font-family: 'Rokkitt', serif;
+    font-size: 15vw;
+    font-weight: bold;
+    text-decoration: double underline 1.5vw rgb(var(--yellow));
+    transition: .4s;
+    color: rgb(var(--dark))
+}
+
+p span.big-text {
+    text-decoration: underline 1.5vw rgb(var(--purple));
+    transition: .4s;
+    color: rgb(var(--dark))
+}
+
+p.big-text:hover {
+    text-decoration: double underline 1.5vw rgb(var(--purple));
+    color: rgb(var(--light))
+}
+
+p:hover span.big-text {
+    text-decoration: underline 1.5vw rgb(var(--yellow));
+    color: rgb(var(--light))
+}
+
+.big-text-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-big-text-container-heading {
+    padding: 10px;
+    color: rgb(var(--light));
+    text-align: center;
+}
+
+.sub-big-text-container-text {
+    padding: 10px;
+    color: rgb(var(--dark));
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.sub-big-text-container-text p {
+    margin-block-end: 20px;
+}
+
+.sub-big-text-container-heading-2 {
+    padding: 10px;
+    color: rgb(var(--dark));
+    text-align: center;
+}
+
+.sub-big-text-container-text-2 {
+    padding: 10px;
+    color: rgb(var(--dark));
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.sub-big-text-container-text-2 .input-field input[type=text]:focus, .sub-big-text-container-text-2 .input-field input[type=text] {
+    font-size: 2rem !important;
+}
+
+i.fa-solid {
+    font-size: 6rem;
+    color: rgb(var(--green));
+    margin-top: 40px;
+    margin-bottom: 20px;
+    transition: .4s;
+}
+
+i.fa-solid:hover {
+    color: rgb(var(--purple));
+}
+
+.trail-comment {
+    padding: 10px 0px;
+}
+
+.larger-icon {
+    font-size: 16px;
+}
+
+.flex-wrapper {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* ABOUT PAGES EXTRA CSS */
+
+.aboutholder {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+.aboutdark {
+    color: rgb(var(--dark))
+}
+
+.aboutlight {
+    color: rgb(var(--light))
+}
+
+.aboutwidth {
+    max-width: 1000px;
+}
+
+.about {
+    border: 0px;
+    background-color: inherit;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.active .collapsible-header.about, .active .collapsible-body.about {
+    color: white;
+}

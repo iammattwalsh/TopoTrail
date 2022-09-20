@@ -355,8 +355,8 @@ const app = Vue.createApp({
 
         // experimental method
         testToggle () {
-            this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
-            this.trailAssets.mesh = '/uploads/mt-hood/mesh.obj'
+            // this.trailAssets.texture_trail = '/uploads/mt-hood/texture_trail.png'
+            this.trailAssets.mesh = '/uploads/mt-hood-southside-summit-ascent/mesh-high.obj'
         },
     },
 }).mount('#app')
